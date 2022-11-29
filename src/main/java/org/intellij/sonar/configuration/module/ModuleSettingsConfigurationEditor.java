@@ -1,5 +1,7 @@
 package org.intellij.sonar.configuration.module;
 
+import static org.intellij.sonar.util.UIUtil.makeObj;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.intellij.openapi.module.Module;
@@ -10,6 +12,15 @@ import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.roots.ui.configuration.ModuleConfigurationState;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.openapi.vfs.VirtualFile;
+import java.awt.BorderLayout;
+import java.util.ArrayList;
+import java.util.Optional;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 import org.intellij.sonar.configuration.WorkingDirs;
 import org.intellij.sonar.configuration.partials.AlternativeWorkingDirActionListener;
 import org.intellij.sonar.configuration.partials.SonarResourcesTableView;
@@ -22,26 +33,19 @@ import org.intellij.sonar.util.UIUtil;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.Nullable;
 
-import javax.swing.*;
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.Optional;
-
-import static org.intellij.sonar.util.UIUtil.makeObj;
-
 public class ModuleSettingsConfigurationEditor implements ModuleConfigurationEditor {
 
   private final ModuleLocalAnalysisScriptView myLocalAnalysisScriptView;
-  private final SonarResourcesTableView mySonarResourcesTableView;
+  private final SonarResourcesTableView myResourcesTableView;
   private final Module myModule;
   private final Project myProject;
-  private final ModuleSonarServersView mySonarServersView;
+  private final ModuleSonarServersView myServersView;
   private JPanel myRootJPanel;
-  private JPanel myPanelForSonarResources;
-  private JComboBox mySonarServersComboBox;
-  private JButton myAddSonarServerButton;
-  private JButton myEditSonarServerButton;
-  private JButton myRemoveSonarServerButton;
+  private JPanel myPanelForResources;
+  private JComboBox myServersComboBox;
+  private JButton myAddServerButton;
+  private JButton myEditServerButton;
+  private JButton myRemoveServerButton;
   private JComboBox myLocalAnalysisScriptComboBox;
   private JButton myAddLocalAnalysisScriptButton;
   private JButton myEditLocalAnalysisScriptButton;
@@ -49,31 +53,32 @@ public class ModuleSettingsConfigurationEditor implements ModuleConfigurationEdi
   private JComboBox myWorkingDirComboBox;
   private JCheckBox myUseAlternativeWorkingDirCheckBox;
   private TextFieldWithBrowseButton myAlternativeWorkingDirTextFieldWithBrowseButton;
+  private JTextField rulesTextField;
 
   public ModuleSettingsConfigurationEditor(ModuleConfigurationState state) {
-    this.myModule = state.getRootModel().getModule();
+    this.myModule = state.getCurrentRootModel().getModule();
     this.myProject = state.getProject();
     this.myLocalAnalysisScriptView = new ModuleLocalAnalysisScriptView(
-            myLocalAnalysisScriptComboBox,
-            myAddLocalAnalysisScriptButton,
-            myEditLocalAnalysisScriptButton,
-            myRemoveLocalAnalysisScriptButton,
-            myProject
+        myLocalAnalysisScriptComboBox,
+        myAddLocalAnalysisScriptButton,
+        myEditLocalAnalysisScriptButton,
+        myRemoveLocalAnalysisScriptButton,
+        myProject
     );
-    this.mySonarServersView = new ModuleSonarServersView(
-            mySonarServersComboBox,
-            myAddSonarServerButton,
-            myEditSonarServerButton,
-            myRemoveSonarServerButton,
-            myProject
+    this.myServersView = new ModuleSonarServersView(
+        myServersComboBox,
+        myAddServerButton,
+        myEditServerButton,
+        myRemoveServerButton,
+        myProject
     );
-    this.mySonarResourcesTableView = new SonarResourcesTableView(myProject,mySonarServersView);
+    this.myResourcesTableView = new SonarResourcesTableView(myProject, myServersView);
   }
 
   @Nls
   @Override
   public String getDisplayName() {
-    return "SonarQube";
+    return "SonarQube Fork";
   }
 
   @Nullable
@@ -85,9 +90,9 @@ public class ModuleSettingsConfigurationEditor implements ModuleConfigurationEdi
   @Nullable
   @Override
   public JComponent createComponent() {
-    myPanelForSonarResources.setLayout(new BorderLayout());
-    myPanelForSonarResources.add(mySonarResourcesTableView.getComponent(),BorderLayout.CENTER);
-    mySonarServersView.init();
+    myPanelForResources.setLayout(new BorderLayout());
+    myPanelForResources.add(myResourcesTableView.getComponent(), BorderLayout.CENTER);
+    myServersView.init();
     myLocalAnalysisScriptView.init();
     initWorkingDir();
     initAlternativeWorkingDir();
@@ -104,16 +109,16 @@ public class ModuleSettingsConfigurationEditor implements ModuleConfigurationEdi
     VirtualFile[] contentRoots = ModuleRootManager.getInstance(myModule).getContentRoots();
     final VirtualFile projectBaseDir = ProjectUtil.guessProjectDir(myProject);
     final VirtualFile dirToSelect = contentRoots.length > 0
-      ? contentRoots[0]
-      : projectBaseDir;
+        ? contentRoots[0]
+        : projectBaseDir;
     myAlternativeWorkingDirTextFieldWithBrowseButton.addActionListener(
-      new AlternativeWorkingDirActionListener(
-        myProject,myAlternativeWorkingDirTextFieldWithBrowseButton,dirToSelect
-      )
+        new AlternativeWorkingDirActionListener(
+            myProject, myAlternativeWorkingDirTextFieldWithBrowseButton, dirToSelect
+        )
     );
     processAlternativeDirSelections();
     myUseAlternativeWorkingDirCheckBox.addActionListener(
-            e -> processAlternativeDirSelections()
+        e -> processAlternativeDirSelections()
     );
   }
 
@@ -125,7 +130,9 @@ public class ModuleSettingsConfigurationEditor implements ModuleConfigurationEdi
   @Override
   public boolean isModified() {
     final ModuleSettings component = ModuleSettings.getInstance(myModule);
-    if (null == component) return false;
+    if (null == component) {
+      return false;
+    }
     Settings state = component.getState();
     return null == state || !state.equals(this.toSettings());
   }
@@ -153,29 +160,33 @@ public class ModuleSettingsConfigurationEditor implements ModuleConfigurationEdi
 
   public Settings toSettings() {
     return Settings.of(
-      mySonarServersComboBox.getSelectedItem().toString(),
-      ImmutableList.copyOf(mySonarResourcesTableView.getTable().getItems()),
-      myLocalAnalysisScriptComboBox.getSelectedItem().toString(),
-      myWorkingDirComboBox.getSelectedItem().toString(),
-      myAlternativeWorkingDirTextFieldWithBrowseButton.getText(),
-      myUseAlternativeWorkingDirCheckBox.isSelected()
+        myServersComboBox.getSelectedItem().toString(),
+        ImmutableList.copyOf(myResourcesTableView.getTable().getItems()),
+        myLocalAnalysisScriptComboBox.getSelectedItem().toString(),
+        myWorkingDirComboBox.getSelectedItem().toString(),
+        myAlternativeWorkingDirTextFieldWithBrowseButton.getText(),
+        myUseAlternativeWorkingDirCheckBox.isSelected(),
+        rulesTextField.getText()
     );
   }
 
   public void setValuesFromSettings(Settings settings) {
-    if (null == settings) return;
+    if (null == settings) {
+      return;
+    }
     final String serverName = SonarServersUtil.withDefaultForModule(settings.getServerName());
-    UIUtil.selectComboBoxItem(mySonarServersComboBox,serverName);
+    UIUtil.selectComboBoxItem(myServersComboBox, serverName);
     final ArrayList<Resource> resources = Lists.newArrayList(settings.getResources());
-    mySonarResourcesTableView.setModel(resources);
+    myResourcesTableView.setModel(resources);
     final String localAnalysisScripName = LocalAnalysisScriptsUtil.withDefaultForModule(settings
         .getLocalAnalysisScripName());
-    UIUtil.selectComboBoxItem(myLocalAnalysisScriptComboBox,localAnalysisScripName);
-    UIUtil.selectComboBoxItem(myWorkingDirComboBox,WorkingDirs.withDefaultForModule(settings.getWorkingDirSelection()));
+    UIUtil.selectComboBoxItem(myLocalAnalysisScriptComboBox, localAnalysisScripName);
+    UIUtil.selectComboBoxItem(myWorkingDirComboBox, WorkingDirs.withDefaultForModule(settings.getWorkingDirSelection()));
     myAlternativeWorkingDirTextFieldWithBrowseButton.setText(settings.getAlternativeWorkingDirPath());
     myUseAlternativeWorkingDirCheckBox.setSelected(
         Optional.ofNullable(settings.getUseAlternativeWorkingDir()).orElse(false)
     );
+    rulesTextField.setText(settings.getExtParams());
     processAlternativeDirSelections();
   }
 }

@@ -26,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class SonarToolWindowFactory implements ToolWindowFactory {
 
-  public static final String TOOL_WINDOW_ID = "SonarQube";
+  public static final String TOOL_WINDOW_ID = "SonarQube Fork";
 
   @Override
   public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {

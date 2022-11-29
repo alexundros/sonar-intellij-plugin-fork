@@ -4,11 +4,11 @@ public class SonarResourceMapping {
 
   private String sonarResourceKey;
 
-  public String getSonarResourceKey() {
+  public String getResourceKey() {
     return sonarResourceKey;
   }
 
-  public void setSonarResourceKey(String sonarResourceKey) {
+  public void setResourceKey(String sonarResourceKey) {
     this.sonarResourceKey = sonarResourceKey;
   }
 }

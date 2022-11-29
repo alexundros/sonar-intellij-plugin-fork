@@ -1,388 +1,78 @@
-<idea-plugin url="https://github.com/sonar-intellij-plugin/sonar-intellij-plugin"
-             xmlns:xi="http://www.w3.org/2001/XInclude">
-    <id>org.mayevskiy.intellij.sonar</id>
-    <name>SonarQube Analyzer</name>
+<idea-plugin url="https://github.com/alexundros/sonar-intellij-plugin-fork">
+  <id>org.intellij.sonar_fork</id>
+  <name>SonarQube Analyzer Fork</name>
 
-    <version>2.10.1</version>
+  <version>0.0.1</version>
 
-    <vendor email="sonarqube-intellij-plugin@googlegroups.com"
-            url="https://github.com/sonar-intellij-plugin/sonar-intellij-plugin">
-        SonarQube Community Intellij Plugin
-        Team
-    </vendor>
+  <vendor email=""
+    url="https://github.com/alexundros/sonar-intellij-plugin-fork">
+    SonarQube Community Intellij Plugin Fork
+    Team
+  </vendor>
 
-    <description>SonarQube Analyzer connects SonarQube server with Intellij Idea products.</description>
+  <description>SonarQube Analyzer connects SonarQube server with Intellij Idea products.</description>
 
-    <change-notes>
-        <![CDATA[
+  <change-notes>
+    <![CDATA[
 <p>
-2.10.1
+0.0.1
 <ul>
-<li>Fixes Light files should have PSI only in one project</li>
-</ul>
-</p>
-<p>
-2.10.0
-<ul>
-<li>Provides SonarServer Inspection for IntelliJ 2021.2</li>
-</ul>
-</p>
-<p>
-2.9.9
-<ul>
-<li>Change plugin name to SonarQube Analyzer</li>
-</ul>
-</p>
-<p>
-2.9.8
-<ul>
-<li>Provides SonarServer Inspection for IntelliJ 2021.1</li>
-</ul>
-</p>
-<p>
-2.9.7
-<ul>
-<li>Fixes #274: Cannot load password if using credentials</li>
-</ul>
-</p>
-<p>
-2.9.6
-<ul>
-<li>Plugin enabling and disabling does not require IDE restart any more</li>
-</ul>
-</p>
-<p>
-<p>
-2.9.5
-<ul>
-<li>Fixes #267: NPE in pycharm 2020.2</li>
-</ul>
-</p>
-<p>
-2.9.4
-<ul>
-<li>Provides SonarServer Inspection for IntelliJ 2020.3</li>
-</ul>
-</p>
-<p>
-2.9.3
-<ul>
-<li>fix editor annotations and rule description loading</li>
-</ul>
-</p>
-<p>
-2.9.2
-<ul>
-<li>fix error invalid page size issue #268</li>
-</ul>
-</p>
-<p>
-2.9.1
-<ul>
-<li>Provides SonarServer Inspection for IntelliJ 2020.2</li>
-</ul>
-</p>
-<p>
-2.9.0
-<ul>
-<li>Provides SonarServer Inspection for IntelliJ 2020.1</li>
-</ul>
-</p>
-<p>
-<p>
-2.8.4
-<ul>
-<li>add more verbose notifications if try to download issues</li>
-</ul>
-</p>
-<p>
-2.8.3
-<ul>
-<li>Fixes 254: add error notification if try to run local analysis</li>
-<li>Fixes 255: add hard download limit, show warning if hard limit is used</li>
-</ul>
-</p>
-<p>
-2.8.2
-<ul>
-<li>Fixes #252: Make compatible with Intellij 2019.3</li>
-</ul>
-</p>
-<p>
-2.8.1
-<ul>
-<li>Fixes #251: Error when undo create class</li>
-</ul>
-</p>
-<p>
-2.8.0
-<ul>
-<li>Add Sonarcloud support</li>
-</ul>
-</p>
-<p>
-2.7.1
-<ul>
-<li>Make compatible with Intellij 2019.2</li>
-</ul>
-</p>
-<p>
-2.7.0
-<ul>
-<li>Added possibility to filter projects by name (using case-insensitive "contains" search)</li>
-</ul>
-</p>
-<p>
-2.6.5
-<ul>
-<li>Make compatible with Intellij 2019.1</li>
-</ul>
-</p>
-<p>
-2.6.4
-<ul>
-<li>Fixes  “java.lang.IncompatibleClassChangeError: vtable stub</li>
-</ul>
-</p>
-<p>
-2.6.3
-<ul>
-<li>Fixes #227: Component name collision</li>
-</ul>
-</p>
-<p>
-2.6.2
-<ul>
-<li>Fixes #212: Errors displayed three times</li>
-</ul>
-</p>
-<p>
-2.6.1
-<ul>
-<li>Fixes #225: Download Resources (for Projects) fails with > 500 projects</li>
-</ul>
-</p>
-<p>
-2.6
-<ul>
-<li>Fixes #210: 2018.3 compatibility </li>
-</ul>
-</p>
-<p>
-2.5.1
-<ul>
-<li>Fixes #220: Projects retrieval does not fetch all Projects</li>
-</ul>
-</p>
-<p>
-2.5
-<ul>
-<li>Fixes #202,#160: Support for API access token to SonarQube</li>
-</ul>
-</p>
-<p>
-2.4.1
-<ul>
-<li>Fixes #211: Make the xml files in persistent settings to use relative path</li>
-</ul>
-</p>
-<p>
-2.4.0
-<ul>
-<li>Fixes #204: Make compatible with IDEA 2018.2</li>
-</ul>
-</p>
-<p>
-<p>
-2.3.0
-<ul>
-<li>Fixes #196: Make compatible with IDEA 2018.1</li>
-</ul>
-</p>
-<p>
-<p>
-2.2.0
-<ul>
-<li>Fixes #191: Make compatible with IDEA 2017.2</li>
-</ul>
-</p>
-<p>
-2.1.4
-<ul>
-<li>Fixes #179: use the latest sonar-ws library to be compatible with latest SonarQube versions</li>
-</ul>
-</p>
-<p>
-<p>
-2.1.3
-<ul>
-<li>Make compatible with IDEA 2017.2</li>
-</ul>
-</p>
-<p>
-2.1.2
-<ul>
-<li>Fixes #177: implement compatibility with IDEA v.2017.1</li>
-</ul>
-</p>
-<p>
-<p>
-2.1.1
-<ul>
-<li>Fixes #166: NullPointerException after viewing Sonar options in Project Structure</li>
-<li>Fixes #168: Getting NoSuchMethodError after updating to Intellij IDEA 2016.3</li>
-</ul>
-</p>
-<p>
-2.1.0
-<ul>
-<li>Fixes #158: NoSuchFieldError: PROXY_LOGIN when trying to log into remote server with proxy</li>
-</ul>
-</p>
-<p>
-2.0.12
-<ul>
-<li>Fixes #144: Calling invokeAndWait from read-action leads to possible deadlock</li>
-</ul>
-</p>
-<p>
-2.0.11
-<ul>
-<li>Fixes #125: authenticate when grabbing rule details</li>
-</ul>
-</p>
-<p>
-2.0.10
-<ul>
-<li>Fixes #136: NPE while using SonarQube 5.2</li>
-</ul>
-</p>
-<p>
-2.0.9
-<ul>
-<li>Fixes #123: inspections visible in idea 14.1+</li>
-</ul>
-</p>
-<p>
-2.0.8
-<ul>
-<li>Fixes #123: inspections are visible again in idea 14.1+</li>
-</ul>
-</p>
-<p>
-2.0.7
-<ul>
-<li>Fixes #121: increased timeout when downloading issues from 10 secs to 1 min</li>
-</ul>
-</p>
-<p>
-2.0.6
-<ul>
-<li>Fixes #105: Annotations not shown in PHPStorm 7.1</li>
-<li>Fixes #106: Annotations in PHPStorm shown twice per File</li>
-</ul>
-</p>
-<p>
-2.0.5
-<ul>
-<li>Fixes #92: perform matching issues to files in parallel</li>
-<li>Fixes #93: Add more verbose information on loading SonarQube resources from server</li>
-<li>Fixes #81: Occurrences of SONAR_USER_PASSWORD should not be displayed</li>
-<li>Fixes #77: $MODULE_NAME is not expanded when analyzing for "Whole project"</li>
-</ul>
-</p>
-<p>
-2.0.4
-<ul>
-<li>Fixes #88: Please show some progress while processing downloaded violations</li>
-<li>Fixes #91: Inspection is not cancellable while downloaded issues are analysed</li>
-<li>Fixes #87: Inspections in editor are not refreshed if rerun inspection</li>
-<li>Fixes #86: Rename Sonar to SonarQube</li>
-<li>Fixes #71: Path to sonar-report.json with PROJECT_BASE_DIR does not work on windows</li>
-</ul>
-</p>
-<p>
-2.0.3
-<ul>
-<li>Fixes #80: When starting a local analysis script the SonarQube tool window should be shown</li>
-<li>Fixes #76: IDEA hangs and eats all memory</li>
-<li>Fixes #66: It should be possible to put analysis in background Fixes</li>
-<li>Fixes #72: Canceling a local analysis does not work</li>
-</ul>
-</p>
-<p>
-2.0.2
-<ul>
-<li>Fixes #53: Adopt API changes in IntelliJ14</li>
-</ul>
-</p>
-<p>
-2.0.1
-<ul>
-<li>Fixes #84: download more then one resources in one analysis</li>
-<li>Fixes #73: download or local analysis only if inspections are enabled in current context</li>
-<li>Fixes #70: Project is not yet initialized exception in DocumentChangeListener</li>
-<li>Fixes #67: alternative working dir does not work in pycharm</li>
-<li>Fixes #64: sonar resources not sorted alpha-numerically</li>
-<li>Fixes #62: Remove space in start of script</li>
-</ul>
-</p>
-<p>
-2.0.0
-<ul>
-<li>Issues download and incremental analysis with sonar 4.x</li>
+<li>Based on SonarQube Analyzer 2.10.1 (https://github.com/sonar-intellij-plugin/sonar-intellij-plugin)</li>
 </ul>
 </p>
 ]]>
-    </change-notes>
+  </change-notes>
 
-    <!-- see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
-    <idea-version since-build="212" /> <!-- IntelliJ IDEA v.2020.2-->
+  <!-- see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
+  <idea-version since-build="212"/> <!-- IntelliJ IDEA v.2021.2-->
 
-    <depends>com.intellij.modules.lang</depends>
+  <depends>com.intellij.modules.lang</depends>
 
-    <projectListeners>
-        <listener class="org.intellij.sonar.DocumentChangeListener"
-                  topic="com.intellij.openapi.project.ProjectManagerListener"/>
-    </projectListeners>
-    <extensions defaultExtensionNs="com.intellij">
+  <projectListeners>
+    <listener class="org.intellij.sonar.DocumentChangeListener"
+      topic="com.intellij.openapi.project.ProjectManagerListener"/>
+  </projectListeners>
 
-        <projectConfigurable id="projectSettingsConfigurable"
-                             groupId="tools"
-                             instance="org.intellij.sonar.configuration.project.ProjectSettingsConfigurable"
-                             displayName="SonarQube"
-        />
-        <moduleConfigurationEditorProvider
-                implementation="org.intellij.sonar.configuration.module.SonarQubeModuleConfigurationEditorProvider"
-        />
-        <applicationService
-                serviceImplementation="org.intellij.sonar.persistence.SonarServers"/>
-        <applicationService
-                serviceImplementation="org.intellij.sonar.persistence.LocalAnalysisScripts"/>
-        <applicationService
-                serviceImplementation="org.intellij.sonar.persistence.SonarResourcesComponent"/>
-        <applicationService
-                serviceImplementation="org.intellij.sonar.persistence.SonarConsoleSettings"/>
-        <applicationService
-                preload="true"
-                serviceImplementation="org.intellij.sonar.SonarIntellijPluginApplicationService" />
-        <projectService serviceImplementation="org.intellij.sonar.console.SonarConsole" />
-        <projectService serviceImplementation="org.intellij.sonar.persistence.SonarRules" />
-        <projectService serviceImplementation="org.intellij.sonar.persistence.ProjectSettings" />
-        <projectService serviceImplementation="org.intellij.sonar.persistence.IssuesByFileIndexProjectService" />
+  <extensions defaultExtensionNs="com.intellij">
+    <projectConfigurable id="projectSettingsConfigurable"
+      groupId="tools"
+      instance="org.intellij.sonar.configuration.project.ProjectSettingsConfigurable"
+      displayName="SonarQube Fork"
+    />
+    <moduleConfigurationEditorProvider
+      implementation="org.intellij.sonar.configuration.module.SonarQubeModuleConfigurationEditorProvider"
+    />
 
-        <moduleService serviceImplementation="org.intellij.sonar.persistence.ModuleSettings" />
+    <applicationService
+      serviceImplementation="org.intellij.sonar.persistence.SonarServers"/>
+    <applicationService
+      serviceImplementation="org.intellij.sonar.persistence.LocalAnalysisScripts"/>
+    <applicationService
+      serviceImplementation="org.intellij.sonar.persistence.SonarResourcesComponent"/>
+    <applicationService
+      serviceImplementation="org.intellij.sonar.persistence.SonarConsoleSettings"/>
+    <applicationService
+      preload="true"
+      serviceImplementation="org.intellij.sonar.SonarIntellijPluginApplicationService"/>
 
-        <toolWindow id="SonarQube" anchor="bottom"
-                    icon="/images/onde-sonar-13.png"
-                    factoryClass="org.intellij.sonar.console.SonarToolWindowFactory"/>
-        <codeInspection.InspectionExtension id="sonarqubeInspection"
-                                            implementation="org.intellij.sonar.analysis.SonarQubeInspectionExtensionsFactory"/>
+    <projectService serviceImplementation="org.intellij.sonar.console.SonarConsole"/>
+    <projectService serviceImplementation="org.intellij.sonar.persistence.SonarRules"/>
+    <projectService serviceImplementation="org.intellij.sonar.persistence.ProjectSettings"/>
+    <projectService serviceImplementation="org.intellij.sonar.persistence.IssuesByFileIndexProjectService"/>
 
-        <inspectionToolProvider
-                implementation="org.intellij.sonar.SonarInspectionToolProvider"/>
-        <codeInsight.linkHandler id="issueDescriptionLinkHandler"
-                                 prefix="#sonarissue/"
-                                 handlerClass="org.intellij.sonar.analysis.IssueDescriptionLinkHandler"/>
-    </extensions>
+    <moduleService serviceImplementation="org.intellij.sonar.persistence.ModuleSettings"/>
+
+    <toolWindow id="SonarQube Fork" anchor="bottom"
+      icon="/images/onde-sonar-13.png"
+      factoryClass="org.intellij.sonar.console.SonarToolWindowFactory"/>
+
+    <codeInspection.InspectionExtension id="sonarqubeInspection"
+      implementation="org.intellij.sonar.analysis.SonarQubeInspectionExtensionsFactory"/>
+
+    <inspectionToolProvider
+      implementation="org.intellij.sonar.SonarInspectionToolProvider"/>
+    <codeInsight.linkHandler id="issueDescriptionLinkHandler"
+      prefix="#sonarissue/"
+      handlerClass="org.intellij.sonar.analysis.IssueDescriptionLinkHandler"/>
+  </extensions>
 </idea-plugin>

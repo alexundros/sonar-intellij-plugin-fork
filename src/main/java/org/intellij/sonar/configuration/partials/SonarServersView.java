@@ -2,13 +2,12 @@ package org.intellij.sonar.configuration.partials;
 
 import static org.intellij.sonar.util.UIUtil.makeObj;
 
-import java.util.Optional;
-
-import javax.swing.*;
-
 import com.google.common.base.Throwables;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
+import java.util.Optional;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
 import org.intellij.sonar.configuration.SonarServerConfigurable;
 import org.intellij.sonar.console.ConsoleLogLevel;
 import org.intellij.sonar.console.SonarConsole;
@@ -18,35 +17,35 @@ import org.intellij.sonar.util.UIUtil;
 
 public abstract class SonarServersView {
 
-  protected final JComboBox mySonarServersComboBox;
-  protected final JButton myAddSonarServerButton;
-  protected final JButton myEditSonarServerButton;
-  protected final JButton myRemoveSonarServerButton;
+  protected final JComboBox myServersComboBox;
+  protected final JButton myAddServerButton;
+  protected final JButton myEditServerButton;
+  protected final JButton myRemoveServerButton;
   protected final Project myProject;
 
   public SonarServersView(
-    JComboBox mySonarServersComboBox,
-    JButton myAddSonarServerButton,
-    JButton myEditSonarServerButton,
-    JButton myRemoveSonarServerButton,
-    Project myProject
+      JComboBox myServersComboBox,
+      JButton myAddServerButton,
+      JButton myEditServerButton,
+      JButton myRemoveServerButton,
+      Project myProject
   ) {
-    this.mySonarServersComboBox = mySonarServersComboBox;
-    this.myAddSonarServerButton = myAddSonarServerButton;
-    this.myEditSonarServerButton = myEditSonarServerButton;
-    this.myRemoveSonarServerButton = myRemoveSonarServerButton;
+    this.myServersComboBox = myServersComboBox;
+    this.myAddServerButton = myAddServerButton;
+    this.myEditServerButton = myEditServerButton;
+    this.myRemoveServerButton = myRemoveServerButton;
     this.myProject = myProject;
 
     addActionListenersForButtons();
   }
 
   public void init() {
-    initSonarServersComboBox();
+    initServersComboBox();
     disableEditAndRemoveButtonsIfPossible();
   }
 
   public String getSelectedItemFromComboBox() {
-    return mySonarServersComboBox.getSelectedItem().toString();
+    return myServersComboBox.getSelectedItem().toString();
   }
 
   public String getSelectedItem() {
@@ -55,52 +54,53 @@ public abstract class SonarServersView {
 
   protected abstract boolean editAndRemoveButtonsCanBeEnabled();
 
-  protected abstract void initSonarServersComboBox();
+  protected abstract void initServersComboBox();
 
   protected void disableEditAndRemoveButtonsIfPossible() {
     final boolean enabled = editAndRemoveButtonsCanBeEnabled();
-    myEditSonarServerButton.setEnabled(enabled);
-    myRemoveSonarServerButton.setEnabled(enabled);
+    myEditServerButton.setEnabled(enabled);
+    myRemoveServerButton.setEnabled(enabled);
   }
 
-  protected SonarServerConfigurable showSonarServerConfigurableDialog() {
-    return showSonarServerConfigurableDialog(null);
+  protected SonarServerConfigurable showServerConfigurableDialog() {
+    return showServerConfigurableDialog(null);
   }
 
-  protected SonarServerConfigurable showSonarServerConfigurableDialog(SonarServerConfig oldSonarServerConfigBean) {
+  protected SonarServerConfigurable showServerConfigurableDialog(SonarServerConfig oldServerConfigBean) {
     final SonarServerConfigurable dlg = new SonarServerConfigurable(myProject);
-    if (null != oldSonarServerConfigBean)
-      dlg.setValuesFrom(oldSonarServerConfigBean);
+    if (null != oldServerConfigBean) {
+      dlg.setValuesFrom(oldServerConfigBean);
+    }
     dlg.show();
     return dlg;
   }
 
   protected final void addActionListenersForButtons() {
-    addItemListenerForSonarServersComboBox();
-    addActionListenerForAddSonarServerButton();
-    addActionListenerForEditSonarServerButton();
-    addActionListenerForRemoveSonarServerButton();
+    addItemListenerForServersComboBox();
+    addActionListenerForAddServerButton();
+    addActionListenerForEditServerButton();
+    addActionListenerForRemoveServerButton();
   }
 
-  private void addItemListenerForSonarServersComboBox() {
-    mySonarServersComboBox.addItemListener(
+  private void addItemListenerForServersComboBox() {
+    myServersComboBox.addItemListener(
         itemEvent -> disableEditAndRemoveButtonsIfPossible()
     );
   }
 
-  private void addActionListenerForAddSonarServerButton() {
-    myAddSonarServerButton.addActionListener(
+  private void addActionListenerForAddServerButton() {
+    myAddServerButton.addActionListener(
         actionEvent -> {
-          final SonarServerConfigurable dlg = showSonarServerConfigurableDialog();
+          final SonarServerConfigurable dlg = showServerConfigurableDialog();
           if (dlg.isOK()) {
-            SonarServerConfig newSonarConfigurationBean = dlg.toSonarServerConfigurationBean();
+            SonarServerConfig newConfigurationBean = dlg.toServerConfigurationBean();
             try {
-              SonarServers.add(newSonarConfigurationBean);
-              mySonarServersComboBox.addItem(makeObj(newSonarConfigurationBean.getName()));
-              UIUtil.selectComboBoxItem(mySonarServersComboBox,newSonarConfigurationBean.getName());
+              SonarServers.add(newConfigurationBean);
+              myServersComboBox.addItem(makeObj(newConfigurationBean.getName()));
+              UIUtil.selectComboBoxItem(myServersComboBox, newConfigurationBean.getName());
             } catch (IllegalArgumentException e) {
-              Messages.showErrorDialog(newSonarConfigurationBean.getName()+" already exists","SonarQube Name Error");
-              showSonarServerConfigurableDialog(newSonarConfigurationBean);
+              Messages.showErrorDialog(newConfigurationBean.getName() + " already exists", "SonarQube Name Error");
+              showServerConfigurableDialog(newConfigurationBean);
               SonarConsole.get(myProject).log(Throwables.getStackTraceAsString(e), ConsoleLogLevel.ERROR);
             }
           }
@@ -108,72 +108,71 @@ public abstract class SonarServersView {
     );
   }
 
-  private void addActionListenerForEditSonarServerButton() {
-    myEditSonarServerButton.addActionListener(
+  private void addActionListenerForEditServerButton() {
+    myEditServerButton.addActionListener(
         actionEvent -> {
-          final Object selectedSonarServer = mySonarServersComboBox.getSelectedItem();
-          final Optional<SonarServerConfig> oldBean = SonarServers.get(selectedSonarServer.toString());
-          if (!oldBean.isPresent()) {
-            Messages.showErrorDialog(selectedSonarServer.toString()+" is not more preset","Cannot Perform Edit");
+          final Object selectedServer = myServersComboBox.getSelectedItem();
+          final Optional<SonarServerConfig> oldBean = SonarServers.get(selectedServer.toString());
+          if (oldBean.isEmpty()) {
+            Messages.showErrorDialog(selectedServer + " is not more preset", "Cannot Perform Edit");
           } else {
-            final SonarServerConfigurable dlg = showSonarServerConfigurableDialog(oldBean.get());
+            final SonarServerConfigurable dlg = showServerConfigurableDialog(oldBean.get());
             if (dlg.isOK()) {
-              performEdit(selectedSonarServer, oldBean.get(), dlg);
+              performEdit(selectedServer, oldBean.get(), dlg);
             }
           }
         }
     );
   }
 
-  private void performEdit(Object selectedSonarServer, SonarServerConfig oldBean, SonarServerConfigurable dlg) {
-    SonarServerConfig newSonarConfigurationBean = dlg.toSonarServerConfigurationBean();
+  private void performEdit(Object selectedServer, SonarServerConfig oldBean, SonarServerConfigurable dlg) {
+    SonarServerConfig newConfigurationBean = dlg.toServerConfigurationBean();
     try {
       SonarServers.remove(oldBean.getName());
-      SonarServers.add(newSonarConfigurationBean);
-      mySonarServersComboBox.removeItem(selectedSonarServer);
-      mySonarServersComboBox.addItem(makeObj(newSonarConfigurationBean.getName()));
-      UIUtil.selectComboBoxItem(mySonarServersComboBox,newSonarConfigurationBean.getName());
+      SonarServers.add(newConfigurationBean);
+      myServersComboBox.removeItem(selectedServer);
+      myServersComboBox.addItem(makeObj(newConfigurationBean.getName()));
+      UIUtil.selectComboBoxItem(myServersComboBox, newConfigurationBean.getName());
     } catch (IllegalArgumentException e) {
+      final String trace = Throwables.getStackTraceAsString(e);
       Messages.showErrorDialog(
-        selectedSonarServer.toString()+" cannot be saved\n\n"+ Throwables.getStackTraceAsString(
-          e
-        ),"Cannot Perform Edit"
+          selectedServer.toString() + " cannot be saved\n\n" + trace, "Cannot Perform Edit"
       );
     }
   }
 
-  private void addActionListenerForRemoveSonarServerButton() {
-    myRemoveSonarServerButton.addActionListener(
+  private void addActionListenerForRemoveServerButton() {
+    myRemoveServerButton.addActionListener(
         actionEvent -> {
-          final Object selectedSonarServer = mySonarServersComboBox.getSelectedItem();
+          final Object selectedServer = myServersComboBox.getSelectedItem();
           int rc = Messages.showOkCancelDialog(
-            "Are you sure you want to remove "+selectedSonarServer.toString()+" ?",
-            "Remove SonarQube Server",
-            "Yes, remove", "No",
-            Messages.getQuestionIcon()
+              "Are you sure you want to remove " + selectedServer.toString() + " ?",
+              "Remove SonarQube Server",
+              "Yes, remove", "No",
+              Messages.getQuestionIcon()
           );
           if (rc == Messages.OK) {
-            SonarServers.remove(selectedSonarServer.toString());
-            mySonarServersComboBox.removeItem(selectedSonarServer);
+            SonarServers.remove(selectedServer.toString());
+            myServersComboBox.removeItem(selectedServer);
             disableEditAndRemoveButtonsIfPossible();
           }
         }
     );
   }
 
-  public JComboBox getSonarServersComboBox() {
-    return mySonarServersComboBox;
+  public JComboBox getServersComboBox() {
+    return myServersComboBox;
   }
 
-  public JButton getAddSonarServerButton() {
-    return myAddSonarServerButton;
+  public JButton getAddServerButton() {
+    return myAddServerButton;
   }
 
-  public JButton getEditSonarServerButton() {
-    return myEditSonarServerButton;
+  public JButton getEditServerButton() {
+    return myEditServerButton;
   }
 
-  public JButton getRemoveSonarServerButton() {
-    return myRemoveSonarServerButton;
+  public JButton getRemoveServerButton() {
+    return myRemoveServerButton;
   }
 }

@@ -1,9 +1,5 @@
 package org.intellij.sonar.persistence;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Optional;
-
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.intellij.openapi.module.Module;
@@ -11,6 +7,9 @@ import com.intellij.openapi.module.ModuleUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Optional;
 
 public class Settings {
 
@@ -20,17 +19,19 @@ public class Settings {
   private String workingDirSelection;
   private String alternativeWorkingDirPath;
   private Boolean useAlternativeWorkingDir;
+  private String extParams;
 
   public Settings() {
   }
 
   public Settings(
-    String serverName,
-    Collection<Resource> resources,
-    String localAnalysisScripName,
-    String workingDirSelection,
-    String alternativeWorkingDirPath,
-    Boolean useAlternativeWorkingDir
+      String serverName,
+      Collection<Resource> resources,
+      String localAnalysisScripName,
+      String workingDirSelection,
+      String alternativeWorkingDirPath,
+      Boolean useAlternativeWorkingDir,
+      String extParams
   ) {
     this.serverName = serverName;
     this.resources = resources;
@@ -38,34 +39,38 @@ public class Settings {
     this.workingDirSelection = workingDirSelection;
     this.alternativeWorkingDirPath = alternativeWorkingDirPath;
     this.useAlternativeWorkingDir = useAlternativeWorkingDir;
+    this.extParams = extParams;
   }
 
   public static Settings copyOf(Settings settings) {
     return Settings.of(
-      settings.getServerName(),
-      settings.getResources(),
-      settings.getLocalAnalysisScripName(),
-      settings.getWorkingDirSelection(),
-      settings.getAlternativeWorkingDirPath(),
-      settings.getUseAlternativeWorkingDir()
+        settings.getServerName(),
+        settings.getResources(),
+        settings.getLocalAnalysisScripName(),
+        settings.getWorkingDirSelection(),
+        settings.getAlternativeWorkingDirPath(),
+        settings.getUseAlternativeWorkingDir(),
+        settings.getExtParams()
     );
   }
 
   public static Settings of(
-    String serverName,
-    Collection<Resource> resources,
-    String localAnalysisScripName,
-    String workingDirSelection,
-    String alternativeWorkingDirPath,
-    Boolean useAlternativeWorkingDir
+      String serverName,
+      Collection<Resource> resources,
+      String localAnalysisScripName,
+      String workingDirSelection,
+      String alternativeWorkingDirPath,
+      Boolean useAlternativeWorkingDir,
+      String rules
   ) {
     return new Settings(
-      serverName,
-      resources,
-      localAnalysisScripName,
-      workingDirSelection,
-      alternativeWorkingDirPath,
-      useAlternativeWorkingDir
+        serverName,
+        resources,
+        localAnalysisScripName,
+        workingDirSelection,
+        alternativeWorkingDirPath,
+        useAlternativeWorkingDir,
+        rules
     );
   }
 
@@ -74,7 +79,7 @@ public class Settings {
     Project project = psiFile.getProject();
     VirtualFile virtualFile = psiFile.getVirtualFile();
     if (null != virtualFile) {
-      Module module = ModuleUtil.findModuleForFile(virtualFile,project);
+      Module module = ModuleUtil.findModuleForFile(virtualFile, project);
       if (null != module) {
         settings = ModuleSettings.getInstance(module).getState();
       }
@@ -88,19 +93,20 @@ public class Settings {
   }
 
   public Settings enrichWithProjectSettings(Project project) {
-    Settings enrichedSettings = copyOf(this);
+    Settings settings = copyOf(this);
     if (SonarServers.PROJECT.equals(this.getServerName())) {
       final Optional<Settings> projectSettings = Optional.ofNullable(ProjectSettings.getInstance(project).getState());
       if (projectSettings.isPresent()) {
-        enrichedSettings.setServerName(projectSettings.get().getServerName());
-        enrichWithResources(enrichedSettings, projectSettings.get());
-        enrichedSettings.setWorkingDirSelection(projectSettings.get().getWorkingDirSelection());
-        enrichedSettings.setAlternativeWorkingDirPath(projectSettings.get().getAlternativeWorkingDirPath());
-        enrichedSettings.setUseAlternativeWorkingDir(projectSettings.get().getUseAlternativeWorkingDir());
+        settings.setServerName(projectSettings.get().getServerName());
+        enrichWithResources(settings, projectSettings.get());
+        settings.setWorkingDirSelection(projectSettings.get().getWorkingDirSelection());
+        settings.setAlternativeWorkingDirPath(projectSettings.get().getAlternativeWorkingDirPath());
+        settings.setUseAlternativeWorkingDir(projectSettings.get().getUseAlternativeWorkingDir());
+        settings.setExtParams(projectSettings.get().getExtParams());
       }
     }
-    enrichWithLocalAnalysisScript(project, enrichedSettings);
-    return enrichedSettings;
+    enrichWithLocalAnalysisScript(project, settings);
+    return settings;
   }
 
   private void enrichWithResources(Settings processed, Settings projectSettings) {
@@ -169,34 +175,50 @@ public class Settings {
     this.useAlternativeWorkingDir = useAlternativeWorkingDir;
   }
 
+  public String getExtParams() {
+    return extParams;
+  }
+
+  public void setExtParams(String extParams) {
+    this.extParams = extParams;
+  }
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
     Settings settings = (Settings) o;
     return Objects.equal(serverName, settings.serverName) &&
-            Objects.equal(resources, settings.resources) &&
-            Objects.equal(localAnalysisScripName, settings.localAnalysisScripName) &&
-            Objects.equal(workingDirSelection, settings.workingDirSelection) &&
-            Objects.equal(alternativeWorkingDirPath, settings.alternativeWorkingDirPath) &&
-            Objects.equal(useAlternativeWorkingDir, settings.useAlternativeWorkingDir);
+        Objects.equal(resources, settings.resources) &&
+        Objects.equal(localAnalysisScripName, settings.localAnalysisScripName) &&
+        Objects.equal(workingDirSelection, settings.workingDirSelection) &&
+        Objects.equal(alternativeWorkingDirPath, settings.alternativeWorkingDirPath) &&
+        Objects.equal(useAlternativeWorkingDir, settings.useAlternativeWorkingDir) &&
+        Objects.equal(extParams, settings.extParams);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(serverName, resources, localAnalysisScripName, workingDirSelection, alternativeWorkingDirPath, useAlternativeWorkingDir);
+    return Objects.hashCode(
+        serverName, resources, localAnalysisScripName, workingDirSelection,
+        alternativeWorkingDirPath, useAlternativeWorkingDir, extParams
+    );
   }
 
   @Override
   public String toString() {
     return MoreObjects.toStringHelper(Settings.class.getName())
-      .add("serverName",serverName)
-      .add("resources",resources)
-      .add("localAnalysisScripName",localAnalysisScripName)
-      .add("workingDirSelection",workingDirSelection)
-      .add("alternativeWorkingDirPath",alternativeWorkingDirPath)
-      .add("useAlternativeWorkingDir",useAlternativeWorkingDir)
-      .toString();
+        .add("serverName", serverName)
+        .add("resources", resources)
+        .add("localAnalysisScripName", localAnalysisScripName)
+        .add("workingDirSelection", workingDirSelection)
+        .add("alternativeWorkingDirPath", alternativeWorkingDirPath)
+        .add("useAlternativeWorkingDir", useAlternativeWorkingDir)
+        .add("rules", extParams)
+        .toString();
   }
 }

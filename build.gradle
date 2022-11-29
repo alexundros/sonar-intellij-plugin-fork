@@ -14,7 +14,7 @@ repositories {
     mavenCentral()
 }
 
-version = '2.10.1'
+version = '0.0.1'
 
 intellij {
     version '2021.2'
@@ -37,5 +37,10 @@ sonarqube {
 }
 
 tasks.withType(JavaCompile) {
-   it.options.encoding = 'UTF-8'
+    it.options.encoding = 'UTF-8'
+}
+
+tasks.patchPluginXml {
+    sinceBuild null
+    untilBuild null
 }

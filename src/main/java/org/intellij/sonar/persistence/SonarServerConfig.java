@@ -15,17 +15,19 @@ public class SonarServerConfig {
   private String password;
   @Transient
   private boolean isPasswordChanged = false;
-
   @Transient
   private String token;
   private String organization;
+  private String extParams;
 
   public static SonarServerConfig of(String hostUrl) {
-    return SonarServerConfig.of(null,hostUrl,true,null, null, null);
+    return SonarServerConfig.of(null, hostUrl, true, null, null, null, null);
   }
 
-  public static SonarServerConfig of(String name,String hostUrl,boolean anonymous,String user,
-                                     String token, String organization ) {
+  public static SonarServerConfig of(
+      String name, String hostUrl, boolean anonymous, String user,
+      String token, String organization, String rules
+  ) {
     SonarServerConfig bean = new SonarServerConfig();
     bean.name = name;
     bean.hostUrl = hostUrl;
@@ -33,6 +35,7 @@ public class SonarServerConfig {
     bean.user = user;
     bean.token = token;
     bean.organization = organization;
+    bean.extParams = rules;
     return bean;
   }
 
@@ -76,6 +79,14 @@ public class SonarServerConfig {
     this.organization = organization;
   }
 
+  public String getExtParams() {
+    return extParams;
+  }
+
+  public void setExtParams(String extParams) {
+    this.extParams = extParams;
+  }
+
   public String getPassword() {
     return password;
   }
@@ -105,15 +116,16 @@ public class SonarServerConfig {
 
   @Transient
   public void storePassword() {
-    PasswordManager.storePassword(this.name,this.password);
+    PasswordManager.storePassword(this.name, this.password);
   }
 
   public String getToken() {
     return token;
   }
 
-  public void setToken(String token) {
-    this.token = token;
+  @Transient
+  public void clearToken() {
+    this.token = null;
   }
 
   @Transient
@@ -123,20 +135,18 @@ public class SonarServerConfig {
   }
 
   @Transient
-  public void clearToken() {
-    this.token = null;
-  }
-
-
-  @Transient
   public void storeToken() {
-    PasswordManager.storePassword(this.name + "_token",this.token);
+    PasswordManager.storePassword(this.name + "_token", this.token);
   }
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
     SonarServerConfig that = (SonarServerConfig) o;
     return Objects.equal(name, that.name);
   }
@@ -145,5 +155,4 @@ public class SonarServerConfig {
   public int hashCode() {
     return Objects.hashCode(name);
   }
-
 }
