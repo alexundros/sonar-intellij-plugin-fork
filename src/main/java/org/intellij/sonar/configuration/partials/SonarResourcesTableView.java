@@ -4,16 +4,6 @@ import static org.intellij.sonar.configuration.SonarQualifier.MODULE;
 import static org.intellij.sonar.configuration.SonarQualifier.PROJECT;
 import static org.intellij.sonar.persistence.SonarServers.NO_SONAR;
 
-import java.awt.*;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.TreeSet;
-
-import javax.swing.*;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.intellij.openapi.project.Project;
@@ -23,16 +13,26 @@ import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.table.TableView;
 import com.intellij.util.ui.ColumnInfo;
 import com.intellij.util.ui.ListTableModel;
+import java.awt.Dimension;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
 import org.intellij.sonar.configuration.ResourcesSelectionConfigurable;
 import org.intellij.sonar.persistence.Resource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class SonarResourcesTableView {
+
   private static final Map<String, String> TYPE_BY_QUALIFIER = ImmutableMap.<String, String>builder()
-          .put(PROJECT.getQualifier(), "Project")
-          .put(MODULE.getQualifier(), "Module")
-          .build();
+      .put(PROJECT.getQualifier(), "Project")
+      .put(MODULE.getQualifier(), "Module")
+      .build();
   private static final ColumnInfo<Resource, String> TYPE_COLUMN = new ColumnInfo<Resource, String>("Type") {
     @Nullable
     @Override
@@ -56,28 +56,28 @@ public class SonarResourcesTableView {
     }
   };
 
-  private final TableView<Resource> mySonarResourcesTable;
+  private final TableView<Resource> myResourcesTable;
   private final JComponent myJComponent;
-  private final SonarServersView mySonarServersView;
+  private final SonarServersView myServersView;
   private final Project myProject;
 
   public SonarResourcesTableView(Project project, SonarServersView sonarServersView) {
-    this.mySonarServersView = sonarServersView;
-    this.mySonarResourcesTable = new TableView<>();
+    this.myServersView = sonarServersView;
+    this.myResourcesTable = new TableView<>();
     this.myJComponent = createJComponent();
     this.myProject = project;
   }
 
   private JComponent createJComponent() {
-    JPanel panelForTable = ToolbarDecorator.createDecorator(mySonarResourcesTable, null).
-      setAddAction(
-              addAction()
-      ).
-      setRemoveAction(
-          anActionButton -> TableUtil.removeSelectedItems(mySonarResourcesTable)
-      )
-      .disableUpDownActions()
-      .createPanel();
+    JPanel panelForTable = ToolbarDecorator.createDecorator(myResourcesTable, null).
+        setAddAction(
+            addAction()
+        ).
+        setRemoveAction(
+            anActionButton -> TableUtil.removeSelectedItems(myResourcesTable)
+        )
+        .disableUpDownActions()
+        .createPanel();
     panelForTable.setPreferredSize(new Dimension(-1, 100));
     return panelForTable;
   }
@@ -85,46 +85,46 @@ public class SonarResourcesTableView {
   @NotNull
   private AnActionButtonRunnable addAction() {
     return anActionButton -> {
-      final String selectedSonarServerName = Optional.ofNullable(mySonarServersView.getSelectedItem())
+      final String selectedServerName = Optional.ofNullable(myServersView.getSelectedItem())
           .orElse(NO_SONAR);
-      if (!NO_SONAR.equals(selectedSonarServerName)) {
+      if (!NO_SONAR.equals(selectedServerName)) {
         ResourcesSelectionConfigurable dlg = new ResourcesSelectionConfigurable(
-          myProject,
-          selectedSonarServerName
+            myProject,
+            selectedServerName
         );
         dlg.show();
         if (dlg.isOK()) {
-          setSonarResourcesModel(dlg);
+          setResourcesModel(dlg);
         }
       }
     };
   }
 
-  private void setSonarResourcesModel(ResourcesSelectionConfigurable dlg) {
-    final List<Resource> selectedSonarResources = dlg.getSelectedSonarResources();
-    final List<Resource> currentSonarResources = mySonarResourcesTable.getItems();
-    Set<Resource> mergedSonarResourcesAsSet = new TreeSet<>(
+  private void setResourcesModel(ResourcesSelectionConfigurable dlg) {
+    final List<Resource> selectedResources = dlg.getSelectedResources();
+    final List<Resource> currentResources = myResourcesTable.getItems();
+    Set<Resource> mergedResourcesAsSet = new TreeSet<>(
         Comparator.comparing(Resource::getKey)
     );
-    mergedSonarResourcesAsSet.addAll(currentSonarResources);
-    mergedSonarResourcesAsSet.addAll(selectedSonarResources);
-    setModel(Lists.newArrayList(mergedSonarResourcesAsSet));
+    mergedResourcesAsSet.addAll(currentResources);
+    mergedResourcesAsSet.addAll(selectedResources);
+    setModel(Lists.newArrayList(mergedResourcesAsSet));
   }
 
   public void setModel(List<Resource> sonarResources) {
-    mySonarResourcesTable.setModelAndUpdateColumns(
-      new ListTableModel<>(
-        new ColumnInfo[]{
-          NAME_COLUMN,
-          KEY_COLUMN,
-          TYPE_COLUMN
-        }, sonarResources, 0
-      )
+    myResourcesTable.setModelAndUpdateColumns(
+        new ListTableModel<>(
+            new ColumnInfo[]{
+                NAME_COLUMN,
+                KEY_COLUMN,
+                TYPE_COLUMN
+            }, sonarResources, 0
+        )
     );
   }
 
   public TableView<Resource> getTable() {
-    return mySonarResourcesTable;
+    return myResourcesTable;
   }
 
   public JComponent getComponent() {

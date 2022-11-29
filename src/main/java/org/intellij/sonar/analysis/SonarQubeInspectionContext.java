@@ -42,16 +42,24 @@ import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiFile;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Predicate;
 import org.intellij.sonar.DocumentChangeListener;
 import org.intellij.sonar.console.SonarConsole;
 import org.intellij.sonar.console.SonarToolWindowFactory;
 import org.intellij.sonar.index.IssuesByFileIndex;
-import org.intellij.sonar.persistence.*;
+import org.intellij.sonar.persistence.LocalAnalysisScripts;
+import org.intellij.sonar.persistence.ModuleSettings;
+import org.intellij.sonar.persistence.ProjectSettings;
+import org.intellij.sonar.persistence.Settings;
+import org.intellij.sonar.persistence.SonarConsoleSettings;
+import org.intellij.sonar.persistence.SonarServers;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.*;
-import java.util.function.Predicate;
 
 public class SonarQubeInspectionContext implements GlobalInspectionContextExtension<SonarQubeInspectionContext> {
 
@@ -73,7 +81,7 @@ public class SonarQubeInspectionContext implements GlobalInspectionContextExtens
     public Project project;
     public Module module;
 
-    public EnrichedSettings(Settings settings,Project project,Module module) {
+    public EnrichedSettings(Settings settings, Project project, Module module) {
       this.settings = settings;
       this.project = project;
       this.module = module;
@@ -82,15 +90,16 @@ public class SonarQubeInspectionContext implements GlobalInspectionContextExtens
 
   @Override
   public void performPreRunActivities(
-    @NotNull List<Tools> globalTools,
-    @NotNull List<Tools> localTools,
-    @NotNull final GlobalInspectionContext context
+      @NotNull List<Tools> globalTools,
+      @NotNull List<Tools> localTools,
+      @NotNull final GlobalInspectionContext context
   ) {
     new InspectionToolsProcessor(context)
-            .runInspectionTools();
+        .runInspectionTools();
   }
 
   private class InspectionToolsProcessor {
+
     private final GlobalInspectionContext context;
     private boolean newIssuesGlobalInspectionToolEnabled;
     private boolean oldIssuesGlobalInspectionToolEnabled;
@@ -143,7 +152,7 @@ public class SonarQubeInspectionContext implements GlobalInspectionContextExtens
 
     private void saveAllDocuments() {
       ApplicationManager.getApplication().invokeAndWait(
-              () -> FileDocumentManager.getInstance().saveAllDocuments()
+          () -> FileDocumentManager.getInstance().saveAllDocuments()
       );
     }
 
@@ -152,13 +161,13 @@ public class SonarQubeInspectionContext implements GlobalInspectionContextExtens
     }
 
     private void showSonarQubeToolWindowIfNeeded() {
-      if (SonarConsoleSettings.getInstance().isShowSonarConsoleOnAnalysis()) {
+      if (SonarConsoleSettings.getInstance().isShowConsoleOnAnalysis()) {
         ApplicationManager.getApplication().invokeLater(
-                () -> {
-                  final ToolWindow toolWindow = ToolWindowManager.getInstance(project)
-                          .getToolWindow(SonarToolWindowFactory.TOOL_WINDOW_ID);
-                  Optional.ofNullable(toolWindow).ifPresent(window -> window.show(null));
-                }
+            () -> {
+              final ToolWindow toolWindow = ToolWindowManager.getInstance(project)
+                  .getToolWindow(SonarToolWindowFactory.TOOL_WINDOW_ID);
+              Optional.ofNullable(toolWindow).ifPresent(window -> window.show(null));
+            }
         );
       }
     }
@@ -167,14 +176,16 @@ public class SonarQubeInspectionContext implements GlobalInspectionContextExtens
       modules = Sets.newHashSet();
       final ImmutableList.Builder<PsiFile> filesBuilder = ImmutableList.builder();
       Objects.requireNonNull(context.getRefManager().getScope()).accept(
-              new PsiElementVisitor() {
-                @Override
-                public void visitFile(@NotNull PsiFile psiFile) {
-                  filesBuilder.add(psiFile);
-                  final Module module = ModuleUtilCore.findModuleForPsiElement(psiFile);
-                  if (module != null) modules.add(module);
-                }
+          new PsiElementVisitor() {
+            @Override
+            public void visitFile(@NotNull PsiFile psiFile) {
+              filesBuilder.add(psiFile);
+              final Module module = ModuleUtilCore.findModuleForPsiElement(psiFile);
+              if (module != null) {
+                modules.add(module);
               }
+            }
+          }
       );
 
       psiFiles = filesBuilder.build();
@@ -197,7 +208,7 @@ public class SonarQubeInspectionContext implements GlobalInspectionContextExtens
       return isSelectedScope(AnalysisScope.PROJECT);
     }
 
-    private boolean inCustomScopeProjectIsSelected(){
+    private boolean inCustomScopeProjectIsSelected() {
       return isSelectedScope(AnalysisScope.CUSTOM) && isProjectSelected();
     }
 
@@ -205,7 +216,7 @@ public class SonarQubeInspectionContext implements GlobalInspectionContextExtens
       return scopeType == Objects.requireNonNull(context.getRefManager().getScope()).getScopeType();
     }
 
-    private boolean isProjectSelected(){
+    private boolean isProjectSelected() {
       return "Project Files".equals(Objects.requireNonNull(context.getRefManager().getScope()).getDisplayName());
     }
 
@@ -241,7 +252,7 @@ public class SonarQubeInspectionContext implements GlobalInspectionContextExtens
       return ModuleSettings.getInstance(module).getState();
     }
 
-    private void insertProjectSettingsIfConfigured(Settings projectSettings, Settings moduleSettings){
+    private void insertProjectSettingsIfConfigured(Settings projectSettings, Settings moduleSettings) {
       updateServerNameSettings(projectSettings, moduleSettings);
       updateLocalAnalysisScriptsSettings(projectSettings, moduleSettings);
     }
@@ -249,7 +260,7 @@ public class SonarQubeInspectionContext implements GlobalInspectionContextExtens
     private void updateServerNameSettings(Settings projectSettings, Settings moduleSettings) {
       String serverName = moduleSettings.getServerName();
 
-      if(SonarServers.PROJECT.equals(serverName)){
+      if (SonarServers.PROJECT.equals(serverName)) {
         moduleSettings.setServerName(projectSettings.getServerName());
       }
     }
@@ -257,7 +268,7 @@ public class SonarQubeInspectionContext implements GlobalInspectionContextExtens
     private void updateLocalAnalysisScriptsSettings(Settings projectSettings, Settings moduleSettings) {
       String scriptName = moduleSettings.getLocalAnalysisScripName();
 
-      if(LocalAnalysisScripts.PROJECT.equals(scriptName)){
+      if (LocalAnalysisScripts.PROJECT.equals(scriptName)) {
         moduleSettings.setLocalAnalysisScripName(projectSettings.getLocalAnalysisScripName());
       }
     }
@@ -277,8 +288,8 @@ public class SonarQubeInspectionContext implements GlobalInspectionContextExtens
       } else {
         Notifications.Bus.notify(new Notification(
             GROUP_ID, TITLE,
-                "SonarQube is enabled, but the sonar server is not configured. Aborting...",
-                NotificationType.ERROR
+            "SonarQube is enabled, but the sonar server is not configured. Aborting...",
+            NotificationType.ERROR
         ));
       }
     }
@@ -293,16 +304,16 @@ public class SonarQubeInspectionContext implements GlobalInspectionContextExtens
 
     private void runScriptTaskFrom(EnrichedSettings enrichedSettings) {
       final Optional<RunLocalAnalysisScriptTask> scriptTask = RunLocalAnalysisScriptTask.from(
-              enrichedSettings,
-              psiFiles
+          enrichedSettings,
+          psiFiles
       );
       if (scriptTask.isPresent()) {
         scriptTask.get().run();
       } else {
         Notifications.Bus.notify(new Notification(
-            GROUP_ID,TITLE,
-                "SonarQube (new issues) is enabled, but the local analysis script is not configured. Aborting...",
-                NotificationType.ERROR
+            GROUP_ID, TITLE,
+            "SonarQube (new issues) is enabled, but the local analysis script is not configured. Aborting...",
+            NotificationType.ERROR
         ));
       }
     }
@@ -311,8 +322,8 @@ public class SonarQubeInspectionContext implements GlobalInspectionContextExtens
 
   @Override
   public void performPostRunActivities(
-    @NotNull List<InspectionToolWrapper<?, ?>> inspections,
-    @NotNull GlobalInspectionContext context
+      @NotNull List<InspectionToolWrapper<?, ?>> inspections,
+      @NotNull GlobalInspectionContext context
   ) {
     DocumentChangeListener.CHANGED_FILES.clear();
     final Project project = context.getProject();

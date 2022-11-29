@@ -1,9 +1,5 @@
 package org.intellij.sonar.analysis;
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-
 import com.intellij.codeInsight.highlighting.TooltipLinkHandler;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.module.Module;
@@ -11,6 +7,9 @@ import com.intellij.openapi.module.ModuleUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import org.intellij.sonar.index.SonarIssue;
 import org.intellij.sonar.persistence.IssuesByFileIndexProjectService;
 import org.intellij.sonar.persistence.ModuleSettings;
@@ -29,12 +28,12 @@ public class IssueDescriptionLinkHandler extends TooltipLinkHandler {
   @Nullable
   @Override
   public String getDescription(
-    @NotNull final String sonarIssueKey,
-    @NotNull final Editor editor
+      @NotNull final String sonarIssueKey,
+      @NotNull final Editor editor
   ) {
-      return new SonarIssueDescription()
-              .buildFrom(sonarIssueKey, editor)
-              .getDescription();
+    return new SonarIssueDescription()
+        .buildFrom(sonarIssueKey, editor)
+        .getDescription();
   }
 
   private static class SonarIssueDescription {
@@ -62,14 +61,30 @@ public class IssueDescriptionLinkHandler extends TooltipLinkHandler {
       this.description = null;
       this.processing = true;
       getProject();
-      if (processing) getPsiFile();
-      if (processing) getIssuesByFileIndexProjectService();
-      if (processing) getSonarIssue();
-      if (processing) getDescriptionFromFetchedRules();
-      if (processing) getSettings();
-      if (processing) getServerConfig();
-      if (processing) persistRule();
-      if (processing) getDescriptionFromPersistedRule();
+      if (processing) {
+        getPsiFile();
+      }
+      if (processing) {
+        getIssuesByFileIndexProjectService();
+      }
+      if (processing) {
+        getSonarIssue();
+      }
+      if (processing) {
+        getDescriptionFromFetchedRules();
+      }
+      if (processing) {
+        getSettings();
+      }
+      if (processing) {
+        getServerConfig();
+      }
+      if (processing) {
+        persistRule();
+      }
+      if (processing) {
+        getDescriptionFromPersistedRule();
+      }
       return this;
     }
 
@@ -104,9 +119,11 @@ public class IssueDescriptionLinkHandler extends TooltipLinkHandler {
       final String path = psiFile.getVirtualFile().getPath();
       final Set<SonarIssue> issues = index.get(path);
       sonarIssue = issues.stream()
-              .filter(issue -> sonarIssueKey.equals(issue.getKey()))
-              .findFirst().orElse(null);
-      if (sonarIssue == null) processing = false;
+          .filter(issue -> sonarIssueKey.equals(issue.getKey()))
+          .findFirst().orElse(null);
+      if (sonarIssue == null) {
+        processing = false;
+      }
     }
 
     private void getDescriptionFromFetchedRules() {
@@ -133,17 +150,23 @@ public class IssueDescriptionLinkHandler extends TooltipLinkHandler {
       final Module moduleForFile = ModuleUtil.findModuleForFile(psiFile.getVirtualFile(), project);
       if (moduleForFile != null) {
         settings = ModuleSettings.getInstance(moduleForFile).getState();
-        if (settings != null) settings = settings.enrichWithProjectSettings(project);
+        if (settings != null) {
+          settings = settings.enrichWithProjectSettings(project);
+        }
       } else {
         settings = ProjectSettings.getInstance(project).getState();
       }
-      if (settings == null) processing = false;
+      if (settings == null) {
+        processing = false;
+      }
     }
 
     private void getServerConfig() {
       final String serverName = settings.getServerName();
       serverConfig = SonarServers.get(serverName).orElse(null);
-      if (serverConfig == null) processing = false;
+      if (serverConfig == null) {
+        processing = false;
+      }
     }
 
 

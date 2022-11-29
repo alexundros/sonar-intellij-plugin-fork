@@ -4,12 +4,11 @@ import static org.intellij.sonar.persistence.SonarServers.NO_SONAR;
 import static org.intellij.sonar.persistence.SonarServers.PROJECT;
 import static org.intellij.sonar.util.UIUtil.makeObj;
 
+import com.intellij.openapi.project.Project;
 import java.util.Collection;
 import java.util.Optional;
-
-import javax.swing.*;
-
-import com.intellij.openapi.project.Project;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
 import org.intellij.sonar.configuration.partials.SonarServersView;
 import org.intellij.sonar.persistence.ProjectSettings;
 import org.intellij.sonar.persistence.Settings;
@@ -19,13 +18,13 @@ import org.intellij.sonar.persistence.SonarServers;
 public class ModuleSonarServersView extends SonarServersView {
 
   public ModuleSonarServersView(
-    JComboBox mySonarServersComboBox,
-    JButton myAddSonarServerButton,
-    JButton myEditSonarServerButton,
-    JButton myRemoveSonarServerButton,
-    Project myProject
+      JComboBox myServersComboBox,
+      JButton myAddServerButton,
+      JButton myEditServerButton,
+      JButton myRemoveServerButton,
+      Project myProject
   ) {
-    super(mySonarServersComboBox,myAddSonarServerButton,myEditSonarServerButton,myRemoveSonarServerButton,myProject);
+    super(myServersComboBox, myAddServerButton, myEditServerButton, myRemoveServerButton, myProject);
   }
 
   @Override
@@ -34,28 +33,28 @@ public class ModuleSonarServersView extends SonarServersView {
     if (SonarServers.PROJECT.equals(selectedItem)) {
       final Settings settings = ProjectSettings.getInstance(myProject).getState();
       return null != settings
-        ? settings.getServerName()
-        : NO_SONAR;
+          ? settings.getServerName()
+          : NO_SONAR;
     }
     return selectedItem;
   }
 
   @Override
   protected boolean editAndRemoveButtonsCanBeEnabled() {
-    final boolean isNoSonarSelected = NO_SONAR.equals(String.valueOf(mySonarServersComboBox.getSelectedItem()));
-    final boolean isProjectSonarSelected = PROJECT.equals(String.valueOf(mySonarServersComboBox.getSelectedItem()));
-    return !isNoSonarSelected && !isProjectSonarSelected;
+    final boolean isNoSelected = NO_SONAR.equals(String.valueOf(myServersComboBox.getSelectedItem()));
+    final boolean isProjectSelected = PROJECT.equals(String.valueOf(myServersComboBox.getSelectedItem()));
+    return !isNoSelected && !isProjectSelected;
   }
 
   @Override
-  protected void initSonarServersComboBox() {
+  protected void initServersComboBox() {
     Optional<Collection<SonarServerConfig>> sonarServerConfigurationBeans = SonarServers.getAll();
     if (sonarServerConfigurationBeans.isPresent()) {
-      mySonarServersComboBox.removeAllItems();
-      mySonarServersComboBox.addItem(makeObj(PROJECT));
-      mySonarServersComboBox.addItem(makeObj(NO_SONAR));
+      myServersComboBox.removeAllItems();
+      myServersComboBox.addItem(makeObj(PROJECT));
+      myServersComboBox.addItem(makeObj(NO_SONAR));
       for (SonarServerConfig sonarServerConfigBean : sonarServerConfigurationBeans.get()) {
-        mySonarServersComboBox.addItem(makeObj(sonarServerConfigBean.getName()));
+        myServersComboBox.addItem(makeObj(sonarServerConfigBean.getName()));
       }
     }
   }

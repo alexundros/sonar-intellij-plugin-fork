@@ -10,23 +10,23 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @State(
-  name = "sonarConsoleSettings",
-  storages = {
-    @Storage("sonarSettings.xml")
-  }
+    name = "sonarConsoleSettings",
+    storages = {
+        @Storage("sonarSettings.xml")
+    }
 )
 public class SonarConsoleSettings implements PersistentStateComponent<SonarConsoleSettings> {
 
-  private boolean showSonarConsoleOnAnalysis = true;
+  private boolean showConsoleOnAnalysis = true;
 
   public static SonarConsoleSettings getInstance() {
     return ServiceManager.getService(SonarConsoleSettings.class);
   }
 
   @NotNull
-  public static SonarConsoleSettings of(boolean showSonarConsoleOnAnalysis) {
+  public static SonarConsoleSettings of(boolean showConsoleOnAnalysis) {
     final SonarConsoleSettings sonarConsoleSettings = new SonarConsoleSettings();
-    sonarConsoleSettings.setShowSonarConsoleOnAnalysis(showSonarConsoleOnAnalysis);
+    sonarConsoleSettings.setShowConsoleOnAnalysis(showConsoleOnAnalysis);
     return sonarConsoleSettings;
   }
 
@@ -38,27 +38,31 @@ public class SonarConsoleSettings implements PersistentStateComponent<SonarConso
 
   @Override
   public void loadState(@NotNull SonarConsoleSettings state) {
-    XmlSerializerUtil.copyBean(state,this);
+    XmlSerializerUtil.copyBean(state, this);
   }
 
-  public boolean isShowSonarConsoleOnAnalysis() {
-    return showSonarConsoleOnAnalysis;
+  public boolean isShowConsoleOnAnalysis() {
+    return showConsoleOnAnalysis;
   }
 
-  public void setShowSonarConsoleOnAnalysis(boolean showSonarConsoleOnAnalysis) {
-    this.showSonarConsoleOnAnalysis = showSonarConsoleOnAnalysis;
+  public void setShowConsoleOnAnalysis(boolean showConsoleOnAnalysis) {
+    this.showConsoleOnAnalysis = showConsoleOnAnalysis;
   }
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
     SonarConsoleSettings that = (SonarConsoleSettings) o;
-    return showSonarConsoleOnAnalysis == that.showSonarConsoleOnAnalysis;
+    return showConsoleOnAnalysis == that.showConsoleOnAnalysis;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(showSonarConsoleOnAnalysis);
+    return Objects.hashCode(showConsoleOnAnalysis);
   }
 }
