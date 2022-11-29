@@ -1,8 +1,7 @@
 package org.intellij.sonar.util;
 
 import java.util.Optional;
-
-import javax.swing.*;
+import javax.swing.JComboBox;
 
 public final class UIUtil {
 
@@ -17,15 +16,16 @@ public final class UIUtil {
     };
   }
 
-  public static void selectComboBoxItem(JComboBox jComboBox,String name) {
+  public static void selectComboBoxItem(JComboBox jComboBox, String name) {
     Optional itemToSelect = Optional.empty();
-    for (int i = 0;i < jComboBox.getItemCount();i++) {
+    for (int i = 0; i < jComboBox.getItemCount(); i++) {
       final Object item = jComboBox.getItemAt(i);
       if (name.equals(item.toString())) {
         itemToSelect = Optional.of(item);
       }
     }
-    if (itemToSelect.isPresent())
+    if (itemToSelect.isPresent()) {
       jComboBox.setSelectedItem(itemToSelect.get());
+    }
   }
 }

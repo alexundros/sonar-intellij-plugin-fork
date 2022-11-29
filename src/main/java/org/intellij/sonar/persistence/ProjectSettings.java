@@ -8,12 +8,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @State(
-  name = "projectSettings",
-  storages = {
-    @Storage("sonarSettings.xml")
-  }
+    name = "projectSettings",
+    storages = {
+        @Storage("sonarSettings.xml")
+    }
 )
-public class ProjectSettings  implements PersistentStateComponent<Settings> {
+public class ProjectSettings implements PersistentStateComponent<Settings> {
 
   protected Settings settings = new Settings();
 

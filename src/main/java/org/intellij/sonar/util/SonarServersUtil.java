@@ -10,13 +10,17 @@ public final class SonarServersUtil {
 
   @NotNull
   public static String withDefaultForProject(String serverName) {
-    if (null == serverName) return SonarServers.NO_SONAR;
+    if (null == serverName) {
+      return SonarServers.NO_SONAR;
+    }
     return serverName;
   }
 
   @NotNull
   public static String withDefaultForModule(String serverName) {
-    if (null == serverName) return SonarServers.PROJECT;
+    if (null == serverName) {
+      return SonarServers.PROJECT;
+    }
     return serverName;
   }
 }

@@ -62,8 +62,8 @@ public class SonarQubeInspectionExtensionsFactory extends InspectionExtensionsFa
 
   @Override
   public boolean isProjectConfiguredToRunInspections(@NotNull Project project,
-                                                     boolean online,
-                                                     @NotNull Runnable rerunAction) {
+      boolean online,
+      @NotNull Runnable rerunAction) {
     return true;
   }
 }

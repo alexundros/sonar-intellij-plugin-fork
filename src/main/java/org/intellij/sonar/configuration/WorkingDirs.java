@@ -1,10 +1,9 @@
 package org.intellij.sonar.configuration;
 
 import com.intellij.openapi.util.text.StringUtil;
+import java.io.File;
 import org.intellij.sonar.analysis.SonarQubeInspectionContext;
 import org.jetbrains.annotations.NotNull;
-
-import java.io.File;
 
 public class WorkingDirs {
 
@@ -13,29 +12,32 @@ public class WorkingDirs {
 
   @NotNull
   public static String withDefaultForProject(String workingDirSelection) {
-    if (StringUtil.isEmpty(workingDirSelection)) return PROJECT;
+    if (StringUtil.isEmpty(workingDirSelection)) {
+      return PROJECT;
+    }
     return workingDirSelection;
   }
 
   @NotNull
   public static String withDefaultForModule(String workingDirSelection) {
-    if (StringUtil.isEmpty(workingDirSelection)) return MODULE;
+    if (StringUtil.isEmpty(workingDirSelection)) {
+      return MODULE;
+    }
     return workingDirSelection;
   }
 
   public static File computeFrom(@NotNull SonarQubeInspectionContext.EnrichedSettings enrichedSettings) {
-    return new WorkingDirSelector(enrichedSettings)
-            .select()
-            .getWorkingDir();
+    return new WorkingDirSelector(enrichedSettings).select().getWorkingDir();
   }
 
   private static boolean useAlternativeWorkingDir(@NotNull SonarQubeInspectionContext.EnrichedSettings enrichedSettings) {
     return enrichedSettings.settings != null
-            && Boolean.TRUE.equals(enrichedSettings.settings
+        && Boolean.TRUE.equals(enrichedSettings.settings
         .getUseAlternativeWorkingDir());
   }
 
   private static class WorkingDirSelector {
+
     private final SonarQubeInspectionContext.EnrichedSettings enrichedSettings;
 
     boolean processing;
@@ -49,9 +51,15 @@ public class WorkingDirs {
     WorkingDirSelector select() {
       processing = true;
       selectAlternativeWorkingDir();
-      if (processing) setWorkingDirSelection();
-      if (processing) selectModuleWorkingDir();
-      if (processing) selectProjectWorkingDir();
+      if (processing) {
+        setWorkingDirSelection();
+      }
+      if (processing) {
+        selectModuleWorkingDir();
+      }
+      if (processing) {
+        selectProjectWorkingDir();
+      }
       return this;
     }
 
@@ -64,9 +72,9 @@ public class WorkingDirs {
 
     private void setWorkingDirSelection() {
       workingDirSelection = withDefaultForModule(
-              enrichedSettings.settings != null
-                      ? enrichedSettings.settings.getWorkingDirSelection()
-                      : null
+          enrichedSettings.settings != null
+              ? enrichedSettings.settings.getWorkingDirSelection()
+              : null
       );
     }
 
@@ -82,8 +90,8 @@ public class WorkingDirs {
     }
 
     private void selectProjectWorkingDir() {
-        workingDir = new File(enrichedSettings.project.getBasePath());
-        processing = false;
+      workingDir = new File(enrichedSettings.project.getBasePath());
+      processing = false;
     }
 
     File getWorkingDir() {

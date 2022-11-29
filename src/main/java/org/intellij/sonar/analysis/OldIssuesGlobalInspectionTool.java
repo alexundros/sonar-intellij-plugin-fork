@@ -8,9 +8,9 @@ import org.jetbrains.annotations.Nullable;
 public class OldIssuesGlobalInspectionTool extends BaseGlobalInspectionTool {
 
   /**
-   @see com.intellij.codeInspection.InspectionEP#groupDisplayName
-   @see com.intellij.codeInspection.InspectionEP#groupKey
-   @see com.intellij.codeInspection.InspectionEP#groupBundle
+   * @see com.intellij.codeInspection.InspectionEP#groupDisplayName
+   * @see com.intellij.codeInspection.InspectionEP#groupKey
+   * @see com.intellij.codeInspection.InspectionEP#groupBundle
    */
   @Nls
   @NotNull
@@ -20,9 +20,9 @@ public class OldIssuesGlobalInspectionTool extends BaseGlobalInspectionTool {
   }
 
   /**
-   Override this method to return a html inspection description. Otherwise it will be loaded from resources using ID.
-
-   @return hard-code inspection description.
+   * Override this method to return a html inspection description. Otherwise it will be loaded from resources using ID.
+   *
+   * @return hard-code inspection description.
    */
   @Nullable
   @Override

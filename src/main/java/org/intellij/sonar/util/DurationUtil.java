@@ -6,12 +6,10 @@ import java.util.Date;
 public class DurationUtil {
 
   /**
-   Convert a millisecond duration to a string format
-
-   @param durationInMillis
-   A duration to convert to a string form
-
-   @return A string of the form "25:36:259".
+   * Convert a millisecond duration to a string format
+   *
+   * @param durationInMillis A duration to convert to a string form
+   * @return A string of the form "25:36:259".
    */
   public static String getDurationBreakdown(long durationInMillis) {
     if (durationInMillis < 0) {

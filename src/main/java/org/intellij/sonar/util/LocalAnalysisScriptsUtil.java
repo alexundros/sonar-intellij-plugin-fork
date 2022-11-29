@@ -11,15 +11,17 @@ public final class LocalAnalysisScriptsUtil {
 
   @NotNull
   public static String withDefaultForProject(String scriptName) {
-    if (StringUtil.isEmpty(scriptName))
+    if (StringUtil.isEmpty(scriptName)) {
       return LocalAnalysisScripts.NO_LOCAL_ANALYSIS;
+    }
     return scriptName;
   }
 
   @NotNull
   public static String withDefaultForModule(String scriptName) {
-    if (StringUtil.isEmpty(scriptName))
+    if (StringUtil.isEmpty(scriptName)) {
       return LocalAnalysisScripts.PROJECT;
+    }
     return scriptName;
   }
 }

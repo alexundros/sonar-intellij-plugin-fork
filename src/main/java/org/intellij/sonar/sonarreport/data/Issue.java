@@ -14,14 +14,14 @@ public class Issue {
   private final Boolean isNew;
 
   public Issue(
-    String key,
-    String component,
-    Integer line,
-    String message,
-    String severity,
-    String rule,
-    String status,
-    Boolean isNew
+      String key,
+      String component,
+      Integer line,
+      String message,
+      String severity,
+      String rule,
+      String status,
+      Boolean isNew
   ) {
     this.key = key;
     this.component = component;
@@ -67,17 +67,21 @@ public class Issue {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
     Issue issue = (Issue) o;
     return Objects.equal(key, issue.key) &&
-            Objects.equal(component, issue.component) &&
-            Objects.equal(line, issue.line) &&
-            Objects.equal(message, issue.message) &&
-            Objects.equal(severity, issue.severity) &&
-            Objects.equal(rule, issue.rule) &&
-            Objects.equal(status, issue.status) &&
-            Objects.equal(isNew, issue.isNew);
+        Objects.equal(component, issue.component) &&
+        Objects.equal(line, issue.line) &&
+        Objects.equal(message, issue.message) &&
+        Objects.equal(severity, issue.severity) &&
+        Objects.equal(rule, issue.rule) &&
+        Objects.equal(status, issue.status) &&
+        Objects.equal(isNew, issue.isNew);
   }
 
   @Override
@@ -87,15 +91,15 @@ public class Issue {
 
   @Override
   public String toString() {
-    return "Issue{"+
-      "key='"+key+'\''+
-      ", component='"+component+'\''+
-      ", line="+line+
-      ", message='"+message+'\''+
-      ", severity='"+severity+'\''+
-      ", rule='"+rule+'\''+
-      ", status='"+status+'\''+
-      ", isNew="+isNew+
-      '}';
+    return "Issue{" +
+        "key='" + key + '\'' +
+        ", component='" + component + '\'' +
+        ", line=" + line +
+        ", message='" + message + '\'' +
+        ", severity='" + severity + '\'' +
+        ", rule='" + rule + '\'' +
+        ", status='" + status + '\'' +
+        ", isNew=" + isNew +
+        '}';
   }
 }

@@ -9,10 +9,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @State(
-  name = "sonarModuleSettings",
-  storages = {
-    @Storage("$MODULE_FILE$")
-  }
+    name = "sonarModuleSettings",
+    storages = {
+        @Storage("$MODULE_FILE$")
+    }
 )
 public class ModuleSettings implements PersistentStateComponent<Settings> {
 
@@ -26,10 +26,12 @@ public class ModuleSettings implements PersistentStateComponent<Settings> {
   @Override
   public Settings getState() {
     if (settings != null) {
-      if (StringUtil.isEmpty(settings.getServerName()))
+      if (StringUtil.isEmpty(settings.getServerName())) {
         settings.setServerName(SonarServers.PROJECT);
-      if (StringUtil.isEmpty(settings.getLocalAnalysisScripName()))
+      }
+      if (StringUtil.isEmpty(settings.getLocalAnalysisScripName())) {
         settings.setLocalAnalysisScripName(LocalAnalysisScripts.PROJECT);
+      }
     }
     return settings;
   }

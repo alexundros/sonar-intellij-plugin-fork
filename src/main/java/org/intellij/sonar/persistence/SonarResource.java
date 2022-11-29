@@ -11,7 +11,7 @@ public class SonarResource {
   public static SonarResource of(Resource resource) {
     SonarResource sonarResource = new SonarResource();
     if (SonarQualifier.MODULE.getQualifier().equals(resource.getQualifier())) {
-      sonarResource.name = String.format("    %s",resource.getName());
+      sonarResource.name = String.format("    %s", resource.getName());
     } else {
       sonarResource.name = resource.getName();
     }
@@ -37,11 +37,15 @@ public class SonarResource {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
     SonarResource that = (SonarResource) o;
     return Objects.equal(key, that.key) &&
-            Objects.equal(name, that.name);
+        Objects.equal(name, that.name);
   }
 
   @Override
@@ -52,8 +56,8 @@ public class SonarResource {
   @Override
   public String toString() {
     return "SonarResource{" +
-            "key='" + key + '\'' +
-            ", name='" + name + '\'' +
-            '}';
+        "key='" + key + '\'' +
+        ", name='" + name + '\'' +
+        '}';
   }
 }

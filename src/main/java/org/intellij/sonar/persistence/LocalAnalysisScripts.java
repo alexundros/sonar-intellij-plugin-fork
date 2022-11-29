@@ -7,18 +7,17 @@ import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.util.xmlb.XmlSerializerUtil;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.jetbrains.annotations.NotNull;
 
 @State(
-  name = "localAnalysisScripts",
-  storages = {
-    @Storage("sonarSettings.xml")
-  }
+    name = "localAnalysisScripts",
+    storages = {
+        @Storage("sonarSettings.xml")
+    }
 )
 public class LocalAnalysisScripts implements PersistentStateComponent<LocalAnalysisScripts> {
 
@@ -45,9 +44,9 @@ public class LocalAnalysisScripts implements PersistentStateComponent<LocalAnaly
   public static void remove(@NotNull final String name) {
     final Optional<LocalAnalysisScript> bean = get(name);
     Preconditions.checkArgument(bean.isPresent());
-      getInstance().beans = getAll().stream()
-              .filter(localAnalysisScript -> !bean.get().equals(localAnalysisScript))
-              .collect(Collectors.toList());
+    getInstance().beans = getAll().stream()
+        .filter(localAnalysisScript -> !bean.get().equals(localAnalysisScript))
+        .collect(Collectors.toList());
   }
 
   public static Optional<LocalAnalysisScript> get(@NotNull final String name) {
@@ -67,13 +66,17 @@ public class LocalAnalysisScripts implements PersistentStateComponent<LocalAnaly
 
   @Override
   public void loadState(@NotNull LocalAnalysisScripts state) {
-    XmlSerializerUtil.copyBean(state,this);
+    XmlSerializerUtil.copyBean(state, this);
   }
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
     LocalAnalysisScripts that = (LocalAnalysisScripts) o;
     return Objects.equal(beans, that.beans);
   }

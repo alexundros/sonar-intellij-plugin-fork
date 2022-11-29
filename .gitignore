@@ -1,11 +1,9 @@
 .idea
-.gradle
-out
 *.iml
-*.ipr
 *.iws
-atlassian-ide-plugin.xml
-classes
+*.ipr
 *.zip
 build
+classes
+.gradle
 gradle.properties

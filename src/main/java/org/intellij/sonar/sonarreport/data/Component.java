@@ -7,7 +7,7 @@ public class Component {
   private final String key;
   private final String path;
 
-  public Component(String key,String path) {
+  public Component(String key, String path) {
     this.key = key;
     this.path = path;
   }
@@ -22,11 +22,15 @@ public class Component {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
     Component component = (Component) o;
     return Objects.equal(key, component.key) &&
-            Objects.equal(path, component.path);
+        Objects.equal(path, component.path);
   }
 
   @Override
@@ -37,9 +41,9 @@ public class Component {
   @Override
   public String toString() {
     return "Component{" +
-            "key='" + key + '\'' +
-            ", path='" + path + '\'' +
-            '}';
+        "key='" + key + '\'' +
+        ", path='" + path + '\'' +
+        '}';
   }
 
 }

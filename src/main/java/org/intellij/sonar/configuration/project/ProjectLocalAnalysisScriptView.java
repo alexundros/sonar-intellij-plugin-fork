@@ -2,11 +2,10 @@ package org.intellij.sonar.configuration.project;
 
 import static org.intellij.sonar.util.UIUtil.makeObj;
 
-import java.util.Collection;
-
-import javax.swing.*;
-
 import com.intellij.openapi.project.Project;
+import java.util.Collection;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
 import org.intellij.sonar.configuration.partials.LocalAnalysisScriptView;
 import org.intellij.sonar.persistence.LocalAnalysisScript;
 import org.intellij.sonar.persistence.LocalAnalysisScripts;
@@ -14,18 +13,18 @@ import org.intellij.sonar.persistence.LocalAnalysisScripts;
 public class ProjectLocalAnalysisScriptView extends LocalAnalysisScriptView {
 
   public ProjectLocalAnalysisScriptView(
-    JComboBox localAnalysisScriptComboBox,
-    JButton addLocalAnalysisScriptButton,
-    JButton editLocalAnalysisScriptButton,
-    JButton removeLocalAnalysisScriptButton,
-    Project project
+      JComboBox localAnalysisScriptComboBox,
+      JButton addLocalAnalysisScriptButton,
+      JButton editLocalAnalysisScriptButton,
+      JButton removeLocalAnalysisScriptButton,
+      Project project
   ) {
     super(
-      localAnalysisScriptComboBox,
-      addLocalAnalysisScriptButton,
-      editLocalAnalysisScriptButton,
-      removeLocalAnalysisScriptButton,
-      project
+        localAnalysisScriptComboBox,
+        addLocalAnalysisScriptButton,
+        editLocalAnalysisScriptButton,
+        removeLocalAnalysisScriptButton,
+        project
     );
   }
 

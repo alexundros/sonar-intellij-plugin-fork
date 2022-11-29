@@ -1,18 +1,18 @@
 package org.intellij.sonar.configuration.partials;
 
+import static org.intellij.sonar.util.UIUtil.makeObj;
+
 import com.google.common.base.Throwables;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
+import java.util.Optional;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
 import org.intellij.sonar.configuration.LocalAnalysisScriptConfigurable;
 import org.intellij.sonar.console.SonarConsole;
 import org.intellij.sonar.persistence.LocalAnalysisScript;
 import org.intellij.sonar.persistence.LocalAnalysisScripts;
 import org.intellij.sonar.util.UIUtil;
-
-import javax.swing.*;
-import java.util.Optional;
-
-import static org.intellij.sonar.util.UIUtil.makeObj;
 
 public abstract class LocalAnalysisScriptView {
 
@@ -23,11 +23,11 @@ public abstract class LocalAnalysisScriptView {
   protected final JButton myRemoveLocalAnalysisScriptButton;
 
   public LocalAnalysisScriptView(
-    JComboBox localAnalysisScriptComboBox,
-    JButton addLocalAnalysisScriptButton,
-    JButton editLocalAnalysisScriptButton,
-    JButton removeLocalAnalysisScriptButton,
-    Project project
+      JComboBox localAnalysisScriptComboBox,
+      JButton addLocalAnalysisScriptButton,
+      JButton editLocalAnalysisScriptButton,
+      JButton removeLocalAnalysisScriptButton,
+      Project project
   ) {
     this.myProject = project;
     this.myLocalAnalysisScriptComboBox = localAnalysisScriptComboBox;
@@ -64,11 +64,11 @@ public abstract class LocalAnalysisScriptView {
             try {
               LocalAnalysisScripts.add(newLocalAnalysisScript);
               myLocalAnalysisScriptComboBox.addItem(makeObj(newLocalAnalysisScript.getName()));
-              UIUtil.selectComboBoxItem(myLocalAnalysisScriptComboBox,newLocalAnalysisScript.getName());
+              UIUtil.selectComboBoxItem(myLocalAnalysisScriptComboBox, newLocalAnalysisScript.getName());
             } catch (IllegalArgumentException ex) {
-              final String errorMessage = newLocalAnalysisScript.getName()+" already exists";
-              SonarConsole.get(myProject).error(errorMessage+"\n"+ Throwables.getStackTraceAsString(ex));
-              Messages.showErrorDialog(errorMessage,"Local Analysis Script Name Error");
+              final String errorMessage = newLocalAnalysisScript.getName() + " already exists";
+              SonarConsole.get(myProject).error(errorMessage + "\n" + Throwables.getStackTraceAsString(ex));
+              Messages.showErrorDialog(errorMessage, "Local Analysis Script Name Error");
               showLocalAnalysisScriptConfigurableDialog(newLocalAnalysisScript);
             }
           }
@@ -82,7 +82,7 @@ public abstract class LocalAnalysisScriptView {
           final Object selected = myLocalAnalysisScriptComboBox.getSelectedItem();
           final Optional<LocalAnalysisScript> previous = LocalAnalysisScripts.get(selected.toString());
           if (!previous.isPresent()) {
-            Messages.showErrorDialog(selected.toString()+" is not more preset","Cannot Perform Edit");
+            Messages.showErrorDialog(selected.toString() + " is not more preset", "Cannot Perform Edit");
           } else {
             final LocalAnalysisScriptConfigurable dlg = showLocalAnalysisScriptConfigurableDialog(previous.get());
             if (dlg.isOK()) {
@@ -100,11 +100,11 @@ public abstract class LocalAnalysisScriptView {
       LocalAnalysisScripts.add(next);
       myLocalAnalysisScriptComboBox.removeItem(selected);
       myLocalAnalysisScriptComboBox.addItem(makeObj(next.getName()));
-      UIUtil.selectComboBoxItem(myLocalAnalysisScriptComboBox,next.getName());
+      UIUtil.selectComboBoxItem(myLocalAnalysisScriptComboBox, next.getName());
     } catch (IllegalArgumentException e) {
       Messages.showErrorDialog(
-        selected.toString()+" cannot be saved\n\n"+ Throwables.getStackTraceAsString(e),
-        "Cannot Perform Edit"
+          selected.toString() + " cannot be saved\n\n" + Throwables.getStackTraceAsString(e),
+          "Cannot Perform Edit"
       );
     }
   }
@@ -114,10 +114,10 @@ public abstract class LocalAnalysisScriptView {
         actionEvent -> {
           final Object selected = myLocalAnalysisScriptComboBox.getSelectedItem();
           int rc = Messages.showOkCancelDialog(
-            "Are you sure you want to remove "+selected.toString()+" ?",
-            "Remove Local Analysis Script",
-            "Yes, remove", "No",
-            Messages.getQuestionIcon()
+              "Are you sure you want to remove " + selected.toString() + " ?",
+              "Remove Local Analysis Script",
+              "Yes, remove", "No",
+              Messages.getQuestionIcon()
           );
           if (rc == Messages.OK) {
             LocalAnalysisScripts.remove(selected.toString());
@@ -129,6 +129,7 @@ public abstract class LocalAnalysisScriptView {
   }
 
   protected abstract void initComboBox();
+
   protected abstract boolean editAndRemoveButtonsCanBeEnabled();
 
   protected void disableEditAndRemoveButtonsIfPossible() {
@@ -142,10 +143,11 @@ public abstract class LocalAnalysisScriptView {
   }
 
   protected LocalAnalysisScriptConfigurable showLocalAnalysisScriptConfigurableDialog(LocalAnalysisScript
-    localAnalysisScript) {
+      localAnalysisScript) {
     final LocalAnalysisScriptConfigurable dlg = new LocalAnalysisScriptConfigurable(myProject);
-    if (null != localAnalysisScript)
+    if (null != localAnalysisScript) {
       dlg.setValuesFrom(localAnalysisScript);
+    }
     dlg.show();
     return dlg;
   }

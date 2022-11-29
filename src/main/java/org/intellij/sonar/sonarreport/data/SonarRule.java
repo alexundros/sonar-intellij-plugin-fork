@@ -34,13 +34,17 @@ public class SonarRule {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
     SonarRule rule1 = (SonarRule) o;
     return Objects.equal(key, rule1.key) &&
-            Objects.equal(rule, rule1.rule) &&
-            Objects.equal(repository, rule1.repository) &&
-            Objects.equal(name, rule1.name);
+        Objects.equal(rule, rule1.rule) &&
+        Objects.equal(repository, rule1.repository) &&
+        Objects.equal(name, rule1.name);
   }
 
   @Override
@@ -50,11 +54,11 @@ public class SonarRule {
 
   @Override
   public String toString() {
-    return "Rule{"+
-      "key='"+key+'\''+
-      ", rule='"+rule+'\''+
-      ", repository='"+repository+'\''+
-      ", name='"+name+'\''+
-      '}';
+    return "Rule{" +
+        "key='" + key + '\'' +
+        ", rule='" + rule + '\'' +
+        ", repository='" + repository + '\'' +
+        ", name='" + name + '\'' +
+        '}';
   }
 }

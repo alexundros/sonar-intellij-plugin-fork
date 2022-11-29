@@ -1,5 +1,8 @@
 package org.intellij.sonar.console;
 
+import static org.intellij.sonar.console.ConsoleLogLevel.ERROR;
+import static org.intellij.sonar.console.ConsoleLogLevel.INFO;
+
 import com.intellij.execution.filters.TextConsoleBuilderFactory;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.execution.ui.ConsoleViewContentType;
@@ -10,9 +13,6 @@ import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.content.Content;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
-
-import static org.intellij.sonar.console.ConsoleLogLevel.ERROR;
-import static org.intellij.sonar.console.ConsoleLogLevel.INFO;
 
 public final class SonarConsole {
 
@@ -40,13 +40,13 @@ public final class SonarConsole {
   private ConsoleView createConsoleView(Project project) {
     final ConsoleView newConsoleView = TextConsoleBuilderFactory.getInstance().createBuilder(project).getConsole();
     final ToolWindow toolWindow = ToolWindowManager.getInstance(project)
-      .getToolWindow(SonarToolWindowFactory.TOOL_WINDOW_ID);
+        .getToolWindow(SonarToolWindowFactory.TOOL_WINDOW_ID);
     ApplicationManager.getApplication().invokeLater(
         () -> toolWindow.show(
             () -> {
               Content content = toolWindow.getContentManager()
-                .getFactory()
-                .createContent(newConsoleView.getComponent(),"SonarQube Console",true);
+                  .getFactory()
+                  .createContent(newConsoleView.getComponent(), "SonarQube Console", true);
               toolWindow.getContentManager().addContent(content);
             }
         )
@@ -54,33 +54,32 @@ public final class SonarConsole {
     return newConsoleView;
   }
 
-  public void log(String msg,ConsoleLogLevel logLevel) {
+  public void log(String msg, ConsoleLogLevel logLevel) {
     msg = applyPasswordFilter(msg);
     final ConsoleViewContentType consoleViewContentType;
     if (logLevel == INFO) {
       consoleViewContentType = ConsoleViewContentType.NORMAL_OUTPUT;
-    } else
-      if (logLevel == ERROR) {
-        consoleViewContentType = ConsoleViewContentType.ERROR_OUTPUT;
-      } else {
-        throw new IllegalArgumentException(String.format("Unknown log level %s",logLevel));
-      }
-    getConsoleView().print(String.format("%s %s > %s\n",logLevel,getNowFormatted(),msg),consoleViewContentType);
+    } else if (logLevel == ERROR) {
+      consoleViewContentType = ConsoleViewContentType.ERROR_OUTPUT;
+    } else {
+      throw new IllegalArgumentException(String.format("Unknown log level %s", logLevel));
+    }
+    getConsoleView().print(String.format("%s %s > %s\n", logLevel, getNowFormatted(), msg), consoleViewContentType);
   }
 
   private String applyPasswordFilter(String msg) {
     if (null != passwordFiler && null != msg && msg.contains(passwordFiler)) {
-      msg = msg.replace(passwordFiler,"●●●●●●●");
+      msg = msg.replace(passwordFiler, "●●●●●●●");
     }
     return msg;
   }
 
   public void info(String msg) {
-    log(msg,INFO);
+    log(msg, INFO);
   }
 
   public void error(String msg) {
-    log(msg,ERROR);
+    log(msg, ERROR);
   }
 
   private String getNowFormatted() {

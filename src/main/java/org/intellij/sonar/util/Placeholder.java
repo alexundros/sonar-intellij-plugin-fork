@@ -16,6 +16,6 @@ public enum Placeholder {
   SONAR_USER_PASSWORD;
 
   public String getVariableName() {
-    return "$"+this.name();
+    return "$" + this.name();
   }
 }

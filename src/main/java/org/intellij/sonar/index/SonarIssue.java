@@ -16,7 +16,7 @@ public class SonarIssue implements Comparable {
   public SonarIssue() {
   }
 
-  public SonarIssue(String key,String ruleKey,Integer line,String message,String severity,Boolean isNew) {
+  public SonarIssue(String key, String ruleKey, Integer line, String message, String severity, Boolean isNew) {
     this.key = key;
     this.ruleKey = ruleKey;
     this.severity = severity;
@@ -27,7 +27,7 @@ public class SonarIssue implements Comparable {
 
   @Transient
   public String formattedMessage() {
-    return String.format("[%s] %s",this.severity,this.message);
+    return String.format("[%s] %s", this.severity, this.message);
   }
 
   public String getKey() {
@@ -80,13 +80,17 @@ public class SonarIssue implements Comparable {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
     SonarIssue that = (SonarIssue) o;
     return Objects.equal(line, that.line) &&
-            Objects.equal(message, that.message) &&
-            Objects.equal(severity, that.severity) &&
-            Objects.equal(isNew, that.isNew);
+        Objects.equal(message, that.message) &&
+        Objects.equal(severity, that.severity) &&
+        Objects.equal(isNew, that.isNew);
   }
 
   @Override
@@ -96,8 +100,8 @@ public class SonarIssue implements Comparable {
 
   @Override
   public int compareTo(@NotNull Object that) {
-    return Objects.equal(this,that)
-      ? 0
-      : -1;
+    return Objects.equal(this, that)
+        ? 0
+        : -1;
   }
 }

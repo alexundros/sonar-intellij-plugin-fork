@@ -1,31 +1,30 @@
 package org.intellij.sonar.configuration.module;
 
+import static org.intellij.sonar.util.UIUtil.makeObj;
+
 import com.intellij.openapi.project.Project;
+import java.util.Collection;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
 import org.intellij.sonar.configuration.partials.LocalAnalysisScriptView;
 import org.intellij.sonar.persistence.LocalAnalysisScript;
 import org.intellij.sonar.persistence.LocalAnalysisScripts;
 
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import java.util.Collection;
-
-import static org.intellij.sonar.util.UIUtil.makeObj;
-
 public class ModuleLocalAnalysisScriptView extends LocalAnalysisScriptView {
 
   public ModuleLocalAnalysisScriptView(
-    JComboBox localAnalysisScriptComboBox,
-    JButton addLocalAnalysisScriptButton,
-    JButton editLocalAnalysisScriptButton,
-    JButton removeLocalAnalysisScriptButton,
-    Project project
+      JComboBox localAnalysisScriptComboBox,
+      JButton addLocalAnalysisScriptButton,
+      JButton editLocalAnalysisScriptButton,
+      JButton removeLocalAnalysisScriptButton,
+      Project project
   ) {
     super(
-      localAnalysisScriptComboBox,
-      addLocalAnalysisScriptButton,
-      editLocalAnalysisScriptButton,
-      removeLocalAnalysisScriptButton,
-      project
+        localAnalysisScriptComboBox,
+        addLocalAnalysisScriptButton,
+        editLocalAnalysisScriptButton,
+        removeLocalAnalysisScriptButton,
+        project
     );
   }
 
@@ -40,7 +39,8 @@ public class ModuleLocalAnalysisScriptView extends LocalAnalysisScriptView {
   }
 
   protected boolean editAndRemoveButtonsCanBeEnabled() {
-    final boolean isNoLocalAnalysis = LocalAnalysisScripts.NO_LOCAL_ANALYSIS.equals(String.valueOf(myLocalAnalysisScriptComboBox.getSelectedItem()));
+    final boolean isNoLocalAnalysis = LocalAnalysisScripts.NO_LOCAL_ANALYSIS.equals(
+        String.valueOf(myLocalAnalysisScriptComboBox.getSelectedItem()));
     final boolean isProject = LocalAnalysisScripts.PROJECT.equals(String.valueOf(myLocalAnalysisScriptComboBox.getSelectedItem()));
     return !isNoLocalAnalysis && !isProject;
   }

@@ -1,7 +1,6 @@
 package org.intellij.sonar.console;
 
 import com.google.common.base.Throwables;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,7 +24,7 @@ public class StreamGobbler extends Thread {
       BufferedReader br = new BufferedReader(isr);
       String line;
       while (!isInterrupted() && (line = br.readLine()) != null) {
-        console.log(line,logLevel);
+        console.log(line, logLevel);
       }
     } catch (IOException e) {
       console.log(Throwables.getStackTraceAsString(e), ConsoleLogLevel.ERROR);

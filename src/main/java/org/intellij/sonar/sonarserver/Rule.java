@@ -17,7 +17,7 @@ public class Rule implements Comparable {
   public Rule() {
   }
 
-  public Rule(String key,String name,String severity,String lan,String langName,String htmlDesc) {
+  public Rule(String key, String name, String severity, String lan, String langName, String htmlDesc) {
     this.key = key;
     this.name = name;
     this.severity = severity;
@@ -81,15 +81,19 @@ public class Rule implements Comparable {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
     Rule rule = (Rule) o;
     return Objects.equal(key, rule.key) &&
-            Objects.equal(name, rule.name) &&
-            Objects.equal(severity, rule.severity) &&
-            Objects.equal(lan, rule.lan) &&
-            Objects.equal(langName, rule.langName) &&
-            Objects.equal(htmlDesc, rule.htmlDesc);
+        Objects.equal(name, rule.name) &&
+        Objects.equal(severity, rule.severity) &&
+        Objects.equal(lan, rule.lan) &&
+        Objects.equal(langName, rule.langName) &&
+        Objects.equal(htmlDesc, rule.htmlDesc);
   }
 
   @Override
@@ -99,8 +103,8 @@ public class Rule implements Comparable {
 
   @Override
   public int compareTo(@NotNull Object that) {
-    return Objects.equal(this,that)
-      ? 0
-      : -1;
+    return Objects.equal(this, that)
+        ? 0
+        : -1;
   }
 }

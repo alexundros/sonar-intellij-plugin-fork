@@ -6,10 +6,10 @@ import com.intellij.openapi.roots.ui.configuration.ModuleConfigurationState;
 
 public class SonarQubeModuleConfigurationEditorProvider implements ModuleConfigurationEditorProvider {
 
-    @Override
-    public ModuleConfigurationEditor[] createEditors(ModuleConfigurationState state) {
-        return new ModuleConfigurationEditor[] {
-                new ModuleSettingsConfigurationEditor(state)
-        };
-    }
+  @Override
+  public ModuleConfigurationEditor[] createEditors(ModuleConfigurationState state) {
+    return new ModuleConfigurationEditor[]{
+        new ModuleSettingsConfigurationEditor(state)
+    };
+  }
 }
